@@ -1,0 +1,45 @@
+{
+    "name": "Landscape",
+    "fields": [
+        {
+            "fieldName": "width",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "height",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "cells",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "turn",
+            "otherEntityName": "turn",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "landscape"
+        }
+    ],
+    "changelogDate": "20190110213049",
+    "entityTableName": "landscape",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "skipClient": true
+}

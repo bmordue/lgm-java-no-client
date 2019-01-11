@@ -1,0 +1,36 @@
+{
+    "name": "Player",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "actor",
+            "otherEntityName": "actor",
+            "otherEntityRelationshipName": "player"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "game",
+            "otherEntityName": "game",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190110213047",
+    "entityTableName": "player",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

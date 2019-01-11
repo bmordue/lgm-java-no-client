@@ -1,0 +1,27 @@
+{
+    "name": "Game",
+    "fields": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "player",
+            "otherEntityName": "player",
+            "otherEntityRelationshipName": "game"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "turn",
+            "otherEntityName": "turn",
+            "otherEntityRelationshipName": "game"
+        }
+    ],
+    "changelogDate": "20190110213045",
+    "entityTableName": "game",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

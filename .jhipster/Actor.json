@@ -1,0 +1,38 @@
+{
+    "name": "Actor",
+    "fields": [
+        {
+            "fieldName": "state",
+            "fieldType": "ActorState",
+            "fieldValues": "ALIVE,DEAD",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "gameOrder",
+            "otherEntityName": "gameOrder",
+            "otherEntityRelationshipName": "actor"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "player",
+            "otherEntityName": "player",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190110213048",
+    "entityTableName": "actor",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "skipClient": true
+}

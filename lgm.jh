@@ -1,0 +1,63 @@
+
+entity Game {}
+
+entity Turn {
+	number Integer required unique
+}
+
+entity Player {
+	name String required
+}
+
+relationship OneToMany {
+	Game to Player{game required}
+}
+
+relationship OneToMany {
+	Game to Turn{game required}
+}
+
+enum ActorState {
+	ALIVE, DEAD
+}
+
+entity Actor {
+	state ActorState required
+}
+
+relationship OneToMany {
+	Player to Actor{player required} 
+}
+
+entity Landscape {
+	width Integer required
+    height Integer required
+    cells String required
+}
+
+relationship OneToOne {
+	Turn to Landscape
+}
+
+enum Direction {
+	UP_LEFT, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN_LEFT, LEFT, CENTRE
+}
+
+entity GameOrder {
+    direction Direction required
+}
+
+relationship OneToMany {
+	Actor to GameOrder{actor required}
+}
+
+relationship OneToMany {
+	Turn to GameOrder{turn required}
+}
+
+
+paginate * with pagination
+
+skipClient GameOrder
+skipClient Actor
+skipClient Landscape
