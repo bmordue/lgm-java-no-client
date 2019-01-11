@@ -4,7 +4,7 @@ This application was generated using JHipster 5.7.2, you can find documentation 
 
 ## Development
 
-To start your application in the dev profile, simply run:
+To start your application in the dev profile, simply run: 
 
     ./mvnw
 
