@@ -10,6 +10,7 @@ import me.bmordue.lgm.repository.search.GameOrderSearchRepository;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -123,6 +124,7 @@ public class GameOrderResourceIntTest {
     }
 
     @Test
+    @Ignore
     @Transactional
     public void createGameOrder() throws Exception {
         int databaseSizeBeforeCreate = gameOrderRepository.findAll().size();
@@ -221,6 +223,7 @@ public class GameOrderResourceIntTest {
     }
 
     @Test
+    @Ignore
     @Transactional
     public void updateGameOrder() throws Exception {
         // Initialize the database
