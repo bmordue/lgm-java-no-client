@@ -37,6 +37,7 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import me.bmordue.lgm.domain.enumeration.Direction;
@@ -130,6 +131,7 @@ public class GameOrderResourceIntTest {
         restGameOrderMockMvc.perform(post("/api/game-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(gameOrder)))
+            .andDo(print())
             .andExpect(status().isCreated());
 
         // Validate the GameOrder in the database
@@ -236,6 +238,7 @@ public class GameOrderResourceIntTest {
         restGameOrderMockMvc.perform(put("/api/game-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(updatedGameOrder)))
+            .andDo(print())
             .andExpect(status().isOk());
 
         // Validate the GameOrder in the database
