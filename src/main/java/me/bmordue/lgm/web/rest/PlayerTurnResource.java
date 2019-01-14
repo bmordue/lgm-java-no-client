@@ -22,8 +22,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 /**
  * REST controller for managing PlayerTurn.
@@ -88,19 +86,11 @@ public class PlayerTurnResource {
      * GET  /player-turns : get all the playerTurns.
      *
      * @param pageable the pagination information
-     * @param filter the filter of the request
      * @return the ResponseEntity with status 200 (OK) and the list of playerTurns in body
      */
     @GetMapping("/player-turns")
     @Timed
-    public ResponseEntity<List<PlayerTurn>> getAllPlayerTurns(Pageable pageable, @RequestParam(required = false) String filter) {
-        if ("player-is-null".equals(filter)) {
-            log.debug("REST request to get all PlayerTurns where player is null");
-            return new ResponseEntity<>(StreamSupport
-                .stream(playerTurnRepository.findAll().spliterator(), false)
-                .filter(playerTurn -> playerTurn.getPlayer() == null)
-                .collect(Collectors.toList()), HttpStatus.OK);
-        }
+    public ResponseEntity<List<PlayerTurn>> getAllPlayerTurns(Pageable pageable) {
         log.debug("REST request to get a page of PlayerTurns");
         Page<PlayerTurn> page = playerTurnRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/player-turns");

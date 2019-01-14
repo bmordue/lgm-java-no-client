@@ -69,10 +69,6 @@ relationship OneToMany {
 
 entity PlayerTurn {}
 
-relationship OneToOne {
-    Player to PlayerTurn{player required}
-}
-
 relationship OneToMany {
 	GameTurn to PlayerTurn{turn required}
 }

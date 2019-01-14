@@ -9,14 +9,6 @@
             "otherEntityRelationshipName": "playerTurn"
         },
         {
-            "relationshipType": "one-to-one",
-            "relationshipValidateRules": "required",
-            "relationshipName": "player",
-            "otherEntityName": "player",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "player"
-        },
-        {
             "relationshipType": "many-to-one",
             "relationshipValidateRules": "required",
             "relationshipName": "turn",

@@ -3,7 +3,6 @@ package me.bmordue.lgm.web.rest;
 import me.bmordue.lgm.LgmApp;
 
 import me.bmordue.lgm.domain.PlayerTurn;
-import me.bmordue.lgm.domain.Player;
 import me.bmordue.lgm.domain.GameTurn;
 import me.bmordue.lgm.domain.Player;
 import me.bmordue.lgm.repository.PlayerTurnRepository;
@@ -86,16 +85,14 @@ public class PlayerTurnResourceIntTest {
     public static PlayerTurn createEntity(EntityManager em) {
         PlayerTurn playerTurn = new PlayerTurn();
         // Add required entity
-        Player player = PlayerResourceIntTest.createEntity(em);
-        em.persist(player);
-        em.flush();
-        playerTurn.setPlayer(player);
-        // Add required entity
         GameTurn gameTurn = GameTurnResourceIntTest.createEntity(em);
         em.persist(gameTurn);
         em.flush();
         playerTurn.setTurn(gameTurn);
         // Add required entity
+        Player player = PlayerResourceIntTest.createEntity(em);
+        em.persist(player);
+        em.flush();
         playerTurn.setPlayer(player);
         return playerTurn;
     }

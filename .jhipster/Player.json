@@ -11,14 +11,6 @@
     ],
     "relationships": [
         {
-            "relationshipType": "one-to-one",
-            "relationshipName": "playerTurn",
-            "otherEntityName": "playerTurn",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "player"
-        },
-        {
             "relationshipType": "one-to-many",
             "relationshipName": "actor",
             "otherEntityName": "actor",

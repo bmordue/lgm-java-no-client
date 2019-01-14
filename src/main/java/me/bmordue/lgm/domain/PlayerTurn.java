@@ -27,10 +27,6 @@ public class PlayerTurn implements Serializable {
 
     @OneToMany(mappedBy = "playerTurn")
     private Set<ActorCommand> actorCommands = new HashSet<>();
-    @OneToOne(mappedBy = "player")
-    @JsonIgnore
-    private Player player;
-
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("playerTurns")
@@ -73,19 +69,6 @@ public class PlayerTurn implements Serializable {
 
     public void setActorCommands(Set<ActorCommand> actorCommands) {
         this.actorCommands = actorCommands;
-    }
-
-    public Player getPlayer() {
-        return player;
-    }
-
-    public PlayerTurn player(Player player) {
-        this.player = player;
-        return this;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     public GameTurn getTurn() {

@@ -24,9 +24,7 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            <column name="player_turn_id" type="bigint">
-                <constraints unique="true" nullable="true" uniqueConstraintName="ux_player_player_turn_id" />
-            </column>
+
             <column name="game_id" type="bigint">
                 <constraints nullable="false" />
             </column>

@@ -29,9 +29,6 @@ public class Player implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @OneToOne    @JoinColumn(unique = true)
-    private PlayerTurn playerTurn;
-
     @OneToMany(mappedBy = "player")
     private Set<Actor> actors = new HashSet<>();
     @OneToMany(mappedBy = "player")
@@ -61,19 +58,6 @@ public class Player implements Serializable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public PlayerTurn getPlayerTurn() {
-        return playerTurn;
-    }
-
-    public Player playerTurn(PlayerTurn playerTurn) {
-        this.playerTurn = playerTurn;
-        return this;
-    }
-
-    public void setPlayerTurn(PlayerTurn playerTurn) {
-        this.playerTurn = playerTurn;
     }
 
     public Set<Actor> getActors() {
