@@ -10,8 +10,8 @@
         },
         {
             "relationshipType": "one-to-many",
-            "relationshipName": "turn",
-            "otherEntityName": "turn",
+            "relationshipName": "gameTurn",
+            "otherEntityName": "gameTurn",
             "otherEntityRelationshipName": "game"
         }
     ],
@@ -23,5 +23,6 @@
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*"
+    "applications": "*",
+    "skipClient": true
 }

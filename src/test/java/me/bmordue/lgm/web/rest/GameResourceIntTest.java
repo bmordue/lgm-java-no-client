@@ -4,7 +4,6 @@ import me.bmordue.lgm.LgmApp;
 
 import me.bmordue.lgm.domain.Game;
 import me.bmordue.lgm.repository.GameRepository;
-import me.bmordue.lgm.repository.search.GameSearchRepository;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -13,8 +12,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -25,15 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 
 
 import static me.bmordue.lgm.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -48,14 +42,6 @@ public class GameResourceIntTest {
 
     @Autowired
     private GameRepository gameRepository;
-
-    /**
-     * This repository is mocked in the me.bmordue.lgm.repository.search test package.
-     *
-     * @see me.bmordue.lgm.repository.search.GameSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private GameSearchRepository mockGameSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -79,7 +65,7 @@ public class GameResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final GameResource gameResource = new GameResource(gameRepository, mockGameSearchRepository);
+        final GameResource gameResource = new GameResource(gameRepository);
         this.restGameMockMvc = MockMvcBuilders.standaloneSetup(gameResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -119,9 +105,6 @@ public class GameResourceIntTest {
         List<Game> gameList = gameRepository.findAll();
         assertThat(gameList).hasSize(databaseSizeBeforeCreate + 1);
         Game testGame = gameList.get(gameList.size() - 1);
-
-        // Validate the Game in Elasticsearch
-        verify(mockGameSearchRepository, times(1)).save(testGame);
     }
 
     @Test
@@ -141,9 +124,6 @@ public class GameResourceIntTest {
         // Validate the Game in the database
         List<Game> gameList = gameRepository.findAll();
         assertThat(gameList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the Game in Elasticsearch
-        verify(mockGameSearchRepository, times(0)).save(game);
     }
 
     @Test
@@ -202,9 +182,6 @@ public class GameResourceIntTest {
         List<Game> gameList = gameRepository.findAll();
         assertThat(gameList).hasSize(databaseSizeBeforeUpdate);
         Game testGame = gameList.get(gameList.size() - 1);
-
-        // Validate the Game in Elasticsearch
-        verify(mockGameSearchRepository, times(1)).save(testGame);
     }
 
     @Test
@@ -223,9 +200,6 @@ public class GameResourceIntTest {
         // Validate the Game in the database
         List<Game> gameList = gameRepository.findAll();
         assertThat(gameList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Game in Elasticsearch
-        verify(mockGameSearchRepository, times(0)).save(game);
     }
 
     @Test
@@ -244,23 +218,6 @@ public class GameResourceIntTest {
         // Validate the database is empty
         List<Game> gameList = gameRepository.findAll();
         assertThat(gameList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the Game in Elasticsearch
-        verify(mockGameSearchRepository, times(1)).deleteById(game.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchGame() throws Exception {
-        // Initialize the database
-        gameRepository.saveAndFlush(game);
-        when(mockGameSearchRepository.search(queryStringQuery("id:" + game.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(game), PageRequest.of(0, 1), 1));
-        // Search the game
-        restGameMockMvc.perform(get("/api/_search/games?query=id:" + game.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(game.getId().intValue())));
     }
 
     @Test

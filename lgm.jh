@@ -4,7 +4,7 @@ entity Game {}
 entity TurnOutcome {}
 
 entity GameTurn {
-	number Integer required unique
+	turnNumber Integer required unique
 }
 
 relationship OneToOne {
@@ -65,6 +65,12 @@ entity ActorCommand {
 
 relationship OneToMany {
 	Actor to ActorCommand{actor required}
+}
+
+entity PlayerTurn {}
+
+relationship OneToOne {
+    Player to PlayerTurn{player required}
 }
 
 relationship OneToMany {

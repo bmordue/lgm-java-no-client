@@ -1,34 +1,49 @@
 {
-    "name": "Player",
+    "name": "GameTurn",
     "fields": [
         {
-            "fieldName": "name",
-            "fieldType": "String",
+            "fieldName": "turnNumber",
+            "fieldType": "Integer",
             "fieldValidateRules": [
-                "required"
+                "required",
+                "unique"
             ]
         }
     ],
     "relationships": [
         {
             "relationshipType": "one-to-one",
-            "relationshipName": "playerTurn",
-            "otherEntityName": "playerTurn",
+            "relationshipName": "turnOutcome",
+            "otherEntityName": "turnOutcome",
             "otherEntityField": "id",
             "ownerSide": true,
-            "otherEntityRelationshipName": "player"
+            "otherEntityRelationshipName": "turn"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "landscape",
+            "otherEntityName": "landscape",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "gameTurn"
         },
         {
             "relationshipType": "one-to-many",
             "relationshipName": "actor",
             "otherEntityName": "actor",
-            "otherEntityRelationshipName": "player"
+            "otherEntityRelationshipName": "turn"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "landscape",
+            "otherEntityName": "landscape",
+            "otherEntityRelationshipName": "turn"
         },
         {
             "relationshipType": "one-to-many",
             "relationshipName": "playerTurn",
             "otherEntityName": "playerTurn",
-            "otherEntityRelationshipName": "player"
+            "otherEntityRelationshipName": "turn"
         },
         {
             "relationshipType": "many-to-one",
@@ -38,8 +53,8 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190110213047",
-    "entityTableName": "player",
+    "changelogDate": "20190114221208",
+    "entityTableName": "game_turn",
     "dto": "no",
     "pagination": "pagination",
     "service": "no",

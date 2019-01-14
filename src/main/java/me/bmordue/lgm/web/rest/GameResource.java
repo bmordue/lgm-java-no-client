@@ -3,7 +3,6 @@ package me.bmordue.lgm.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import me.bmordue.lgm.domain.Game;
 import me.bmordue.lgm.repository.GameRepository;
-import me.bmordue.lgm.repository.search.GameSearchRepository;
 import me.bmordue.lgm.web.rest.errors.BadRequestAlertException;
 import me.bmordue.lgm.web.rest.util.HeaderUtil;
 import me.bmordue.lgm.web.rest.util.PaginationUtil;
@@ -22,10 +21,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Game.
@@ -40,11 +35,8 @@ public class GameResource {
 
     private final GameRepository gameRepository;
 
-    private final GameSearchRepository gameSearchRepository;
-
-    public GameResource(GameRepository gameRepository, GameSearchRepository gameSearchRepository) {
+    public GameResource(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-        this.gameSearchRepository = gameSearchRepository;
     }
 
     /**
@@ -62,7 +54,6 @@ public class GameResource {
             throw new BadRequestAlertException("A new game cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Game result = gameRepository.save(game);
-        gameSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/games/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -85,7 +76,6 @@ public class GameResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Game result = gameRepository.save(game);
-        gameSearchRepository.save(result);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, game.getId().toString()))
             .body(result);
@@ -132,25 +122,6 @@ public class GameResource {
         log.debug("REST request to delete Game : {}", id);
 
         gameRepository.deleteById(id);
-        gameSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/games?query=:query : search for the game corresponding
-     * to the query.
-     *
-     * @param query the query of the game search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/games")
-    @Timed
-    public ResponseEntity<List<Game>> searchGames(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Games for query {}", query);
-        Page<Game> page = gameSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/games");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }

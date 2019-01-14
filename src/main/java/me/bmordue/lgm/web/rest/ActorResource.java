@@ -3,7 +3,6 @@ package me.bmordue.lgm.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import me.bmordue.lgm.domain.Actor;
 import me.bmordue.lgm.repository.ActorRepository;
-import me.bmordue.lgm.repository.search.ActorSearchRepository;
 import me.bmordue.lgm.web.rest.errors.BadRequestAlertException;
 import me.bmordue.lgm.web.rest.util.HeaderUtil;
 import me.bmordue.lgm.web.rest.util.PaginationUtil;
@@ -23,10 +22,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Actor.
@@ -41,11 +36,8 @@ public class ActorResource {
 
     private final ActorRepository actorRepository;
 
-    private final ActorSearchRepository actorSearchRepository;
-
-    public ActorResource(ActorRepository actorRepository, ActorSearchRepository actorSearchRepository) {
+    public ActorResource(ActorRepository actorRepository) {
         this.actorRepository = actorRepository;
-        this.actorSearchRepository = actorSearchRepository;
     }
 
     /**
@@ -63,7 +55,6 @@ public class ActorResource {
             throw new BadRequestAlertException("A new actor cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Actor result = actorRepository.save(actor);
-        actorSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/actors/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -86,7 +77,6 @@ public class ActorResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Actor result = actorRepository.save(actor);
-        actorSearchRepository.save(result);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, actor.getId().toString()))
             .body(result);
@@ -133,25 +123,6 @@ public class ActorResource {
         log.debug("REST request to delete Actor : {}", id);
 
         actorRepository.deleteById(id);
-        actorSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/actors?query=:query : search for the actor corresponding
-     * to the query.
-     *
-     * @param query the query of the actor search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/actors")
-    @Timed
-    public ResponseEntity<List<Actor>> searchActors(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Actors for query {}", query);
-        Page<Actor> page = actorSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/actors");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }

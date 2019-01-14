@@ -5,7 +5,6 @@ import me.bmordue.lgm.LgmApp;
 import me.bmordue.lgm.domain.Player;
 import me.bmordue.lgm.domain.Game;
 import me.bmordue.lgm.repository.PlayerRepository;
-import me.bmordue.lgm.repository.search.PlayerSearchRepository;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -14,8 +13,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -26,15 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 
 
 import static me.bmordue.lgm.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,14 +46,6 @@ public class PlayerResourceIntTest {
 
     @Autowired
     private PlayerRepository playerRepository;
-
-    /**
-     * This repository is mocked in the me.bmordue.lgm.repository.search test package.
-     *
-     * @see me.bmordue.lgm.repository.search.PlayerSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private PlayerSearchRepository mockPlayerSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -83,7 +69,7 @@ public class PlayerResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PlayerResource playerResource = new PlayerResource(playerRepository, mockPlayerSearchRepository);
+        final PlayerResource playerResource = new PlayerResource(playerRepository);
         this.restPlayerMockMvc = MockMvcBuilders.standaloneSetup(playerResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -130,9 +116,6 @@ public class PlayerResourceIntTest {
         assertThat(playerList).hasSize(databaseSizeBeforeCreate + 1);
         Player testPlayer = playerList.get(playerList.size() - 1);
         assertThat(testPlayer.getName()).isEqualTo(DEFAULT_NAME);
-
-        // Validate the Player in Elasticsearch
-        verify(mockPlayerSearchRepository, times(1)).save(testPlayer);
     }
 
     @Test
@@ -152,9 +135,6 @@ public class PlayerResourceIntTest {
         // Validate the Player in the database
         List<Player> playerList = playerRepository.findAll();
         assertThat(playerList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the Player in Elasticsearch
-        verify(mockPlayerSearchRepository, times(0)).save(player);
     }
 
     @Test
@@ -236,9 +216,6 @@ public class PlayerResourceIntTest {
         assertThat(playerList).hasSize(databaseSizeBeforeUpdate);
         Player testPlayer = playerList.get(playerList.size() - 1);
         assertThat(testPlayer.getName()).isEqualTo(UPDATED_NAME);
-
-        // Validate the Player in Elasticsearch
-        verify(mockPlayerSearchRepository, times(1)).save(testPlayer);
     }
 
     @Test
@@ -257,9 +234,6 @@ public class PlayerResourceIntTest {
         // Validate the Player in the database
         List<Player> playerList = playerRepository.findAll();
         assertThat(playerList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Player in Elasticsearch
-        verify(mockPlayerSearchRepository, times(0)).save(player);
     }
 
     @Test
@@ -278,24 +252,6 @@ public class PlayerResourceIntTest {
         // Validate the database is empty
         List<Player> playerList = playerRepository.findAll();
         assertThat(playerList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the Player in Elasticsearch
-        verify(mockPlayerSearchRepository, times(1)).deleteById(player.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchPlayer() throws Exception {
-        // Initialize the database
-        playerRepository.saveAndFlush(player);
-        when(mockPlayerSearchRepository.search(queryStringQuery("id:" + player.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(player), PageRequest.of(0, 1), 1));
-        // Search the player
-        restPlayerMockMvc.perform(get("/api/_search/players?query=id:" + player.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(player.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
 
     @Test

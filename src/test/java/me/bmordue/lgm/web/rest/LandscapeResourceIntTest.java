@@ -3,8 +3,8 @@ package me.bmordue.lgm.web.rest;
 import me.bmordue.lgm.LgmApp;
 
 import me.bmordue.lgm.domain.Landscape;
+import me.bmordue.lgm.domain.GameTurn;
 import me.bmordue.lgm.repository.LandscapeRepository;
-import me.bmordue.lgm.repository.search.LandscapeSearchRepository;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -13,8 +13,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -25,15 +23,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 
 
 import static me.bmordue.lgm.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -58,14 +53,6 @@ public class LandscapeResourceIntTest {
     @Autowired
     private LandscapeRepository landscapeRepository;
 
-    /**
-     * This repository is mocked in the me.bmordue.lgm.repository.search test package.
-     *
-     * @see me.bmordue.lgm.repository.search.LandscapeSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private LandscapeSearchRepository mockLandscapeSearchRepository;
-
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
@@ -88,7 +75,7 @@ public class LandscapeResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final LandscapeResource landscapeResource = new LandscapeResource(landscapeRepository, mockLandscapeSearchRepository);
+        final LandscapeResource landscapeResource = new LandscapeResource(landscapeRepository);
         this.restLandscapeMockMvc = MockMvcBuilders.standaloneSetup(landscapeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -108,6 +95,11 @@ public class LandscapeResourceIntTest {
             .width(DEFAULT_WIDTH)
             .height(DEFAULT_HEIGHT)
             .cells(DEFAULT_CELLS);
+        // Add required entity
+        GameTurn gameTurn = GameTurnResourceIntTest.createEntity(em);
+        em.persist(gameTurn);
+        em.flush();
+        landscape.setTurn(gameTurn);
         return landscape;
     }
 
@@ -134,9 +126,6 @@ public class LandscapeResourceIntTest {
         assertThat(testLandscape.getWidth()).isEqualTo(DEFAULT_WIDTH);
         assertThat(testLandscape.getHeight()).isEqualTo(DEFAULT_HEIGHT);
         assertThat(testLandscape.getCells()).isEqualTo(DEFAULT_CELLS);
-
-        // Validate the Landscape in Elasticsearch
-        verify(mockLandscapeSearchRepository, times(1)).save(testLandscape);
     }
 
     @Test
@@ -156,9 +145,6 @@ public class LandscapeResourceIntTest {
         // Validate the Landscape in the database
         List<Landscape> landscapeList = landscapeRepository.findAll();
         assertThat(landscapeList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the Landscape in Elasticsearch
-        verify(mockLandscapeSearchRepository, times(0)).save(landscape);
     }
 
     @Test
@@ -284,9 +270,6 @@ public class LandscapeResourceIntTest {
         assertThat(testLandscape.getWidth()).isEqualTo(UPDATED_WIDTH);
         assertThat(testLandscape.getHeight()).isEqualTo(UPDATED_HEIGHT);
         assertThat(testLandscape.getCells()).isEqualTo(UPDATED_CELLS);
-
-        // Validate the Landscape in Elasticsearch
-        verify(mockLandscapeSearchRepository, times(1)).save(testLandscape);
     }
 
     @Test
@@ -305,9 +288,6 @@ public class LandscapeResourceIntTest {
         // Validate the Landscape in the database
         List<Landscape> landscapeList = landscapeRepository.findAll();
         assertThat(landscapeList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Landscape in Elasticsearch
-        verify(mockLandscapeSearchRepository, times(0)).save(landscape);
     }
 
     @Test
@@ -326,26 +306,6 @@ public class LandscapeResourceIntTest {
         // Validate the database is empty
         List<Landscape> landscapeList = landscapeRepository.findAll();
         assertThat(landscapeList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the Landscape in Elasticsearch
-        verify(mockLandscapeSearchRepository, times(1)).deleteById(landscape.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchLandscape() throws Exception {
-        // Initialize the database
-        landscapeRepository.saveAndFlush(landscape);
-        when(mockLandscapeSearchRepository.search(queryStringQuery("id:" + landscape.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(landscape), PageRequest.of(0, 1), 1));
-        // Search the landscape
-        restLandscapeMockMvc.perform(get("/api/_search/landscapes?query=id:" + landscape.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(landscape.getId().intValue())))
-            .andExpect(jsonPath("$.[*].width").value(hasItem(DEFAULT_WIDTH)))
-            .andExpect(jsonPath("$.[*].height").value(hasItem(DEFAULT_HEIGHT)))
-            .andExpect(jsonPath("$.[*].cells").value(hasItem(DEFAULT_CELLS)));
     }
 
     @Test

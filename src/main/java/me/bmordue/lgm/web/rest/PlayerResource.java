@@ -3,7 +3,6 @@ package me.bmordue.lgm.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import me.bmordue.lgm.domain.Player;
 import me.bmordue.lgm.repository.PlayerRepository;
-import me.bmordue.lgm.repository.search.PlayerSearchRepository;
 import me.bmordue.lgm.web.rest.errors.BadRequestAlertException;
 import me.bmordue.lgm.web.rest.util.HeaderUtil;
 import me.bmordue.lgm.web.rest.util.PaginationUtil;
@@ -23,10 +22,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing Player.
@@ -41,11 +36,8 @@ public class PlayerResource {
 
     private final PlayerRepository playerRepository;
 
-    private final PlayerSearchRepository playerSearchRepository;
-
-    public PlayerResource(PlayerRepository playerRepository, PlayerSearchRepository playerSearchRepository) {
+    public PlayerResource(PlayerRepository playerRepository) {
         this.playerRepository = playerRepository;
-        this.playerSearchRepository = playerSearchRepository;
     }
 
     /**
@@ -63,7 +55,6 @@ public class PlayerResource {
             throw new BadRequestAlertException("A new player cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Player result = playerRepository.save(player);
-        playerSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/players/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -86,7 +77,6 @@ public class PlayerResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Player result = playerRepository.save(player);
-        playerSearchRepository.save(result);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, player.getId().toString()))
             .body(result);
@@ -133,25 +123,6 @@ public class PlayerResource {
         log.debug("REST request to delete Player : {}", id);
 
         playerRepository.deleteById(id);
-        playerSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/players?query=:query : search for the player corresponding
-     * to the query.
-     *
-     * @param query the query of the player search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/players")
-    @Timed
-    public ResponseEntity<List<Player>> searchPlayers(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Players for query {}", query);
-        Page<Player> page = playerSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/players");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }

@@ -1,0 +1,38 @@
+{
+    "name": "ActorCommand",
+    "fields": [
+        {
+            "fieldName": "direction",
+            "fieldType": "Direction",
+            "fieldValues": "UP_LEFT,UP_RIGHT,RIGHT,DOWN_RIGHT,DOWN_LEFT,LEFT,CENTRE",
+            "fieldValidateRules": [
+                "required"
+            ]
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "actor",
+            "otherEntityName": "actor",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "playerTurn",
+            "otherEntityName": "playerTurn",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190114221212",
+    "entityTableName": "actor_command",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*",
+    "skipClient": true
+}

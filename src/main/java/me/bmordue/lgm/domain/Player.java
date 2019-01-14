@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,7 +16,6 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "player")
-@Document(indexName = "player")
 public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -31,8 +29,13 @@ public class Player implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @OneToOne    @JoinColumn(unique = true)
+    private PlayerTurn playerTurn;
+
     @OneToMany(mappedBy = "player")
     private Set<Actor> actors = new HashSet<>();
+    @OneToMany(mappedBy = "player")
+    private Set<PlayerTurn> playerTurns = new HashSet<>();
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("players")
@@ -60,6 +63,19 @@ public class Player implements Serializable {
         this.name = name;
     }
 
+    public PlayerTurn getPlayerTurn() {
+        return playerTurn;
+    }
+
+    public Player playerTurn(PlayerTurn playerTurn) {
+        this.playerTurn = playerTurn;
+        return this;
+    }
+
+    public void setPlayerTurn(PlayerTurn playerTurn) {
+        this.playerTurn = playerTurn;
+    }
+
     public Set<Actor> getActors() {
         return actors;
     }
@@ -83,6 +99,31 @@ public class Player implements Serializable {
 
     public void setActors(Set<Actor> actors) {
         this.actors = actors;
+    }
+
+    public Set<PlayerTurn> getPlayerTurns() {
+        return playerTurns;
+    }
+
+    public Player playerTurns(Set<PlayerTurn> playerTurns) {
+        this.playerTurns = playerTurns;
+        return this;
+    }
+
+    public Player addPlayerTurn(PlayerTurn playerTurn) {
+        this.playerTurns.add(playerTurn);
+        playerTurn.setPlayer(this);
+        return this;
+    }
+
+    public Player removePlayerTurn(PlayerTurn playerTurn) {
+        this.playerTurns.remove(playerTurn);
+        playerTurn.setPlayer(null);
+        return this;
+    }
+
+    public void setPlayerTurns(Set<PlayerTurn> playerTurns) {
+        this.playerTurns = playerTurns;
     }
 
     public Game getGame() {

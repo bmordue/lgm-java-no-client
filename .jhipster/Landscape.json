@@ -26,10 +26,17 @@
     "relationships": [
         {
             "relationshipType": "one-to-one",
-            "relationshipName": "turn",
-            "otherEntityName": "turn",
+            "relationshipName": "gameTurn",
+            "otherEntityName": "gameTurn",
             "ownerSide": false,
             "otherEntityRelationshipName": "landscape"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "turn",
+            "otherEntityName": "gameTurn",
+            "otherEntityField": "id"
         }
     ],
     "changelogDate": "20190110213049",
