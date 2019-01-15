@@ -24,5 +24,6 @@
     <include file="config/liquibase/changelog/20190110213049_added_entity_constraints_Landscape.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190114221212_added_entity_constraints_ActorCommand.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20190114221213_added_entity_constraints_PlayerTurn.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20190110213045_added_entity_constraints_Game.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

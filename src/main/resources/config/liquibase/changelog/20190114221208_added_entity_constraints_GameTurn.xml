@@ -14,12 +14,6 @@
                                  referencedColumnNames="id"
                                  referencedTableName="turn_outcome"/>
 
-        <addForeignKeyConstraint baseColumnNames="landscape_id"
-                                 baseTableName="game_turn"
-                                 constraintName="fk_game_turn_landscape_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="landscape"/>
-
         <addForeignKeyConstraint baseColumnNames="game_id"
                                  baseTableName="game_turn"
                                  constraintName="fk_game_turn_game_id"

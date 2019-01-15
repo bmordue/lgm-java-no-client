@@ -26,8 +26,6 @@
             </column>
             <column name="outcome_id" type="bigint">
                 <constraints unique="true" nullable="true" uniqueConstraintName="ux_game_turn_outcome_id" />
-            </column>            <column name="landscape_id" type="bigint">
-                <constraints unique="true" nullable="false" uniqueConstraintName="ux_game_turn_landscape_id" />
             </column>
             <column name="game_id" type="bigint">
                 <constraints nullable="false" />

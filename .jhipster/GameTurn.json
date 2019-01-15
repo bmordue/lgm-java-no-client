@@ -20,24 +20,9 @@
             "otherEntityRelationshipName": "turn"
         },
         {
-            "relationshipType": "one-to-one",
-            "relationshipValidateRules": "required",
-            "relationshipName": "landscape",
-            "otherEntityName": "landscape",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "turn"
-        },
-        {
             "relationshipType": "one-to-many",
             "relationshipName": "actor",
             "otherEntityName": "actor",
-            "otherEntityRelationshipName": "turn"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "landscape",
-            "otherEntityName": "landscape",
             "otherEntityRelationshipName": "turn"
         },
         {

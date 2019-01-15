@@ -15,10 +15,6 @@ relationship OneToMany {
     GameTurn to Actor{turn required}
 }
 
-relationship OneToMany {
-    GameTurn to Landscape{turn required}
-}
-
 entity Player {
 	name String required
 }
@@ -52,7 +48,7 @@ entity Landscape {
 }
 
 relationship OneToOne {
-	GameTurn{landscape required} to Landscape{turn required}
+	Game{landscape required} to Landscape{turn required}
 }
 
 enum Direction {

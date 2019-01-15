@@ -3,6 +3,7 @@ package me.bmordue.lgm.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -23,6 +24,10 @@ public class Game implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
+    @OneToOne(optional = false)    @NotNull
+    @JoinColumn(unique = true)
+    private Landscape landscape;
+
     @OneToMany(mappedBy = "game")
     private Set<Player> players = new HashSet<>();
     @OneToMany(mappedBy = "game")
@@ -34,6 +39,19 @@ public class Game implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Landscape getLandscape() {
+        return landscape;
+    }
+
+    public Game landscape(Landscape landscape) {
+        this.landscape = landscape;
+        return this;
+    }
+
+    public void setLandscape(Landscape landscape) {
+        this.landscape = landscape;
     }
 
     public Set<Player> getPlayers() {

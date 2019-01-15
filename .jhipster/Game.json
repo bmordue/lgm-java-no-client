@@ -3,6 +3,15 @@
     "fields": [],
     "relationships": [
         {
+            "relationshipType": "one-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "landscape",
+            "otherEntityName": "landscape",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "turn"
+        },
+        {
             "relationshipType": "one-to-many",
             "relationshipName": "player",
             "otherEntityName": "player",

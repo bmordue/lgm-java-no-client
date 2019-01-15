@@ -3,6 +3,7 @@ package me.bmordue.lgm.web.rest;
 import me.bmordue.lgm.LgmApp;
 
 import me.bmordue.lgm.domain.Game;
+import me.bmordue.lgm.domain.Landscape;
 import me.bmordue.lgm.repository.GameRepository;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
@@ -82,6 +83,11 @@ public class GameResourceIntTest {
      */
     public static Game createEntity(EntityManager em) {
         Game game = new Game();
+        // Add required entity
+        Landscape landscape = LandscapeResourceIntTest.createEntity(em);
+        em.persist(landscape);
+        em.flush();
+        game.setLandscape(landscape);
         return game;
     }
 

@@ -3,8 +3,7 @@ package me.bmordue.lgm.web.rest;
 import me.bmordue.lgm.LgmApp;
 
 import me.bmordue.lgm.domain.Landscape;
-import me.bmordue.lgm.domain.GameTurn;
-import me.bmordue.lgm.domain.GameTurn;
+import me.bmordue.lgm.domain.Game;
 import me.bmordue.lgm.repository.LandscapeRepository;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
@@ -97,12 +96,10 @@ public class LandscapeResourceIntTest {
             .height(DEFAULT_HEIGHT)
             .cells(DEFAULT_CELLS);
         // Add required entity
-        GameTurn gameTurn = GameTurnResourceIntTest.createEntity(em);
-        em.persist(gameTurn);
+        Game game = GameResourceIntTest.createEntity(em);
+        em.persist(game);
         em.flush();
-        landscape.setTurn(gameTurn);
-        // Add required entity
-        landscape.setTurn(gameTurn);
+        landscape.setTurn(game);
         return landscape;
     }
 

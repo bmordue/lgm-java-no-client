@@ -32,14 +32,8 @@ public class GameTurn implements Serializable {
     @OneToOne    @JoinColumn(unique = true)
     private TurnOutcome outcome;
 
-    @OneToOne(optional = false)    @NotNull
-    @JoinColumn(unique = true)
-    private Landscape landscape;
-
     @OneToMany(mappedBy = "turn")
     private Set<Actor> actors = new HashSet<>();
-    @OneToMany(mappedBy = "turn")
-    private Set<Landscape> landscapes = new HashSet<>();
     @OneToMany(mappedBy = "turn")
     private Set<PlayerTurn> playerTurns = new HashSet<>();
     @ManyToOne(optional = false)
@@ -82,19 +76,6 @@ public class GameTurn implements Serializable {
         this.outcome = turnOutcome;
     }
 
-    public Landscape getLandscape() {
-        return landscape;
-    }
-
-    public GameTurn landscape(Landscape landscape) {
-        this.landscape = landscape;
-        return this;
-    }
-
-    public void setLandscape(Landscape landscape) {
-        this.landscape = landscape;
-    }
-
     public Set<Actor> getActors() {
         return actors;
     }
@@ -118,31 +99,6 @@ public class GameTurn implements Serializable {
 
     public void setActors(Set<Actor> actors) {
         this.actors = actors;
-    }
-
-    public Set<Landscape> getLandscapes() {
-        return landscapes;
-    }
-
-    public GameTurn landscapes(Set<Landscape> landscapes) {
-        this.landscapes = landscapes;
-        return this;
-    }
-
-    public GameTurn addLandscape(Landscape landscape) {
-        this.landscapes.add(landscape);
-        landscape.setTurn(this);
-        return this;
-    }
-
-    public GameTurn removeLandscape(Landscape landscape) {
-        this.landscapes.remove(landscape);
-        landscape.setTurn(null);
-        return this;
-    }
-
-    public void setLandscapes(Set<Landscape> landscapes) {
-        this.landscapes = landscapes;
     }
 
     public Set<PlayerTurn> getPlayerTurns() {

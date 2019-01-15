@@ -1,7 +1,6 @@
 package me.bmordue.lgm.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -37,12 +36,7 @@ public class Landscape implements Serializable {
 
     @OneToOne(mappedBy = "landscape")
     @JsonIgnore
-    private GameTurn turn;
-
-    @ManyToOne(optional = false)
-    @NotNull
-    @JsonIgnoreProperties("landscapes")
-    private GameTurn turn;
+    private Game turn;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -92,30 +86,17 @@ public class Landscape implements Serializable {
         this.cells = cells;
     }
 
-    public GameTurn getTurn() {
+    public Game getTurn() {
         return turn;
     }
 
-    public Landscape turn(GameTurn gameTurn) {
-        this.turn = gameTurn;
+    public Landscape turn(Game game) {
+        this.turn = game;
         return this;
     }
 
-    public void setTurn(GameTurn gameTurn) {
-        this.turn = gameTurn;
-    }
-
-    public GameTurn getTurn() {
-        return turn;
-    }
-
-    public Landscape turn(GameTurn gameTurn) {
-        this.turn = gameTurn;
-        return this;
-    }
-
-    public void setTurn(GameTurn gameTurn) {
-        this.turn = gameTurn;
+    public void setTurn(Game game) {
+        this.turn = game;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
