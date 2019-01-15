@@ -13,7 +13,7 @@
     "relationships": [
         {
             "relationshipType": "one-to-one",
-            "relationshipName": "turnOutcome",
+            "relationshipName": "outcome",
             "otherEntityName": "turnOutcome",
             "otherEntityField": "id",
             "ownerSide": true,
@@ -21,11 +21,12 @@
         },
         {
             "relationshipType": "one-to-one",
+            "relationshipValidateRules": "required",
             "relationshipName": "landscape",
             "otherEntityName": "landscape",
             "otherEntityField": "id",
             "ownerSide": true,
-            "otherEntityRelationshipName": "gameTurn"
+            "otherEntityRelationshipName": "turn"
         },
         {
             "relationshipType": "one-to-many",

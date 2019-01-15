@@ -30,9 +30,10 @@ public class GameTurn implements Serializable {
     private Integer turnNumber;
 
     @OneToOne    @JoinColumn(unique = true)
-    private TurnOutcome turnOutcome;
+    private TurnOutcome outcome;
 
-    @OneToOne    @JoinColumn(unique = true)
+    @OneToOne(optional = false)    @NotNull
+    @JoinColumn(unique = true)
     private Landscape landscape;
 
     @OneToMany(mappedBy = "turn")
@@ -68,17 +69,17 @@ public class GameTurn implements Serializable {
         this.turnNumber = turnNumber;
     }
 
-    public TurnOutcome getTurnOutcome() {
-        return turnOutcome;
+    public TurnOutcome getOutcome() {
+        return outcome;
     }
 
-    public GameTurn turnOutcome(TurnOutcome turnOutcome) {
-        this.turnOutcome = turnOutcome;
+    public GameTurn outcome(TurnOutcome turnOutcome) {
+        this.outcome = turnOutcome;
         return this;
     }
 
-    public void setTurnOutcome(TurnOutcome turnOutcome) {
-        this.turnOutcome = turnOutcome;
+    public void setOutcome(TurnOutcome turnOutcome) {
+        this.outcome = turnOutcome;
     }
 
     public Landscape getLandscape() {

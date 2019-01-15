@@ -22,7 +22,7 @@ public class TurnOutcome implements Serializable {
     @SequenceGenerator(name = "sequenceGenerator")
     private Long id;
 
-    @OneToOne(mappedBy = "gameTurn")
+    @OneToOne(mappedBy = "outcome")
     @JsonIgnore
     private GameTurn turn;
 

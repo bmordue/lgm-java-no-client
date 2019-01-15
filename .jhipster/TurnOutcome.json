@@ -8,14 +8,14 @@
             "relationshipName": "turn",
             "otherEntityName": "gameTurn",
             "ownerSide": false,
-            "otherEntityRelationshipName": "gameTurn"
+            "otherEntityRelationshipName": "outcome"
         }
     ],
     "changelogDate": "20190114221207",
     "entityTableName": "turn_outcome",
-    "dto": "mapstruct",
+    "dto": "no",
     "pagination": "pagination",
-    "service": "serviceClass",
+    "service": "no",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "",

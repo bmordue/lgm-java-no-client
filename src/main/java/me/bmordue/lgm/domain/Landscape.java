@@ -37,7 +37,7 @@ public class Landscape implements Serializable {
 
     @OneToOne(mappedBy = "landscape")
     @JsonIgnore
-    private GameTurn gameTurn;
+    private GameTurn turn;
 
     @ManyToOne(optional = false)
     @NotNull
@@ -92,17 +92,17 @@ public class Landscape implements Serializable {
         this.cells = cells;
     }
 
-    public GameTurn getGameTurn() {
-        return gameTurn;
+    public GameTurn getTurn() {
+        return turn;
     }
 
-    public Landscape gameTurn(GameTurn gameTurn) {
-        this.gameTurn = gameTurn;
+    public Landscape turn(GameTurn gameTurn) {
+        this.turn = gameTurn;
         return this;
     }
 
-    public void setGameTurn(GameTurn gameTurn) {
-        this.gameTurn = gameTurn;
+    public void setTurn(GameTurn gameTurn) {
+        this.turn = gameTurn;
     }
 
     public GameTurn getTurn() {

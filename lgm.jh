@@ -8,7 +8,7 @@ entity GameTurn {
 }
 
 relationship OneToOne {
-    GameTurn to TurnOutcome{turn required}
+    GameTurn{outcome} to TurnOutcome{turn required}
 }
 
 relationship OneToMany {
@@ -52,7 +52,7 @@ entity Landscape {
 }
 
 relationship OneToOne {
-	GameTurn to Landscape
+	GameTurn{landscape required} to Landscape{turn required}
 }
 
 enum Direction {
@@ -84,5 +84,3 @@ relationship OneToMany {
 paginate * with pagination
 
 skipClient *
-dto TurnOutcome with mapstruct
-service TurnOutcome with serviceClass

@@ -1,11 +1,11 @@
 package me.bmordue.lgm.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import me.bmordue.lgm.service.TurnOutcomeService;
+import me.bmordue.lgm.domain.TurnOutcome;
+import me.bmordue.lgm.repository.TurnOutcomeRepository;
 import me.bmordue.lgm.web.rest.errors.BadRequestAlertException;
 import me.bmordue.lgm.web.rest.util.HeaderUtil;
 import me.bmordue.lgm.web.rest.util.PaginationUtil;
-import me.bmordue.lgm.service.dto.TurnOutcomeDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +22,7 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 /**
@@ -35,27 +36,27 @@ public class TurnOutcomeResource {
 
     private static final String ENTITY_NAME = "turnOutcome";
 
-    private final TurnOutcomeService turnOutcomeService;
+    private final TurnOutcomeRepository turnOutcomeRepository;
 
-    public TurnOutcomeResource(TurnOutcomeService turnOutcomeService) {
-        this.turnOutcomeService = turnOutcomeService;
+    public TurnOutcomeResource(TurnOutcomeRepository turnOutcomeRepository) {
+        this.turnOutcomeRepository = turnOutcomeRepository;
     }
 
     /**
      * POST  /turn-outcomes : Create a new turnOutcome.
      *
-     * @param turnOutcomeDTO the turnOutcomeDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new turnOutcomeDTO, or with status 400 (Bad Request) if the turnOutcome has already an ID
+     * @param turnOutcome the turnOutcome to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new turnOutcome, or with status 400 (Bad Request) if the turnOutcome has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/turn-outcomes")
     @Timed
-    public ResponseEntity<TurnOutcomeDTO> createTurnOutcome(@Valid @RequestBody TurnOutcomeDTO turnOutcomeDTO) throws URISyntaxException {
-        log.debug("REST request to save TurnOutcome : {}", turnOutcomeDTO);
-        if (turnOutcomeDTO.getId() != null) {
+    public ResponseEntity<TurnOutcome> createTurnOutcome(@Valid @RequestBody TurnOutcome turnOutcome) throws URISyntaxException {
+        log.debug("REST request to save TurnOutcome : {}", turnOutcome);
+        if (turnOutcome.getId() != null) {
             throw new BadRequestAlertException("A new turnOutcome cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        TurnOutcomeDTO result = turnOutcomeService.save(turnOutcomeDTO);
+        TurnOutcome result = turnOutcomeRepository.save(turnOutcome);
         return ResponseEntity.created(new URI("/api/turn-outcomes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -64,22 +65,22 @@ public class TurnOutcomeResource {
     /**
      * PUT  /turn-outcomes : Updates an existing turnOutcome.
      *
-     * @param turnOutcomeDTO the turnOutcomeDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated turnOutcomeDTO,
-     * or with status 400 (Bad Request) if the turnOutcomeDTO is not valid,
-     * or with status 500 (Internal Server Error) if the turnOutcomeDTO couldn't be updated
+     * @param turnOutcome the turnOutcome to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated turnOutcome,
+     * or with status 400 (Bad Request) if the turnOutcome is not valid,
+     * or with status 500 (Internal Server Error) if the turnOutcome couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/turn-outcomes")
     @Timed
-    public ResponseEntity<TurnOutcomeDTO> updateTurnOutcome(@Valid @RequestBody TurnOutcomeDTO turnOutcomeDTO) throws URISyntaxException {
-        log.debug("REST request to update TurnOutcome : {}", turnOutcomeDTO);
-        if (turnOutcomeDTO.getId() == null) {
+    public ResponseEntity<TurnOutcome> updateTurnOutcome(@Valid @RequestBody TurnOutcome turnOutcome) throws URISyntaxException {
+        log.debug("REST request to update TurnOutcome : {}", turnOutcome);
+        if (turnOutcome.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        TurnOutcomeDTO result = turnOutcomeService.save(turnOutcomeDTO);
+        TurnOutcome result = turnOutcomeRepository.save(turnOutcome);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, turnOutcomeDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, turnOutcome.getId().toString()))
             .body(result);
     }
 
@@ -92,14 +93,16 @@ public class TurnOutcomeResource {
      */
     @GetMapping("/turn-outcomes")
     @Timed
-    public ResponseEntity<List<TurnOutcomeDTO>> getAllTurnOutcomes(Pageable pageable, @RequestParam(required = false) String filter) {
+    public ResponseEntity<List<TurnOutcome>> getAllTurnOutcomes(Pageable pageable, @RequestParam(required = false) String filter) {
         if ("turn-is-null".equals(filter)) {
             log.debug("REST request to get all TurnOutcomes where turn is null");
-            return new ResponseEntity<>(turnOutcomeService.findAllWhereTurnIsNull(),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(StreamSupport
+                .stream(turnOutcomeRepository.findAll().spliterator(), false)
+                .filter(turnOutcome -> turnOutcome.getTurn() == null)
+                .collect(Collectors.toList()), HttpStatus.OK);
         }
         log.debug("REST request to get a page of TurnOutcomes");
-        Page<TurnOutcomeDTO> page = turnOutcomeService.findAll(pageable);
+        Page<TurnOutcome> page = turnOutcomeRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/turn-outcomes");
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -107,28 +110,29 @@ public class TurnOutcomeResource {
     /**
      * GET  /turn-outcomes/:id : get the "id" turnOutcome.
      *
-     * @param id the id of the turnOutcomeDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the turnOutcomeDTO, or with status 404 (Not Found)
+     * @param id the id of the turnOutcome to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the turnOutcome, or with status 404 (Not Found)
      */
     @GetMapping("/turn-outcomes/{id}")
     @Timed
-    public ResponseEntity<TurnOutcomeDTO> getTurnOutcome(@PathVariable Long id) {
+    public ResponseEntity<TurnOutcome> getTurnOutcome(@PathVariable Long id) {
         log.debug("REST request to get TurnOutcome : {}", id);
-        Optional<TurnOutcomeDTO> turnOutcomeDTO = turnOutcomeService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(turnOutcomeDTO);
+        Optional<TurnOutcome> turnOutcome = turnOutcomeRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(turnOutcome);
     }
 
     /**
      * DELETE  /turn-outcomes/:id : delete the "id" turnOutcome.
      *
-     * @param id the id of the turnOutcomeDTO to delete
+     * @param id the id of the turnOutcome to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/turn-outcomes/{id}")
     @Timed
     public ResponseEntity<Void> deleteTurnOutcome(@PathVariable Long id) {
         log.debug("REST request to delete TurnOutcome : {}", id);
-        turnOutcomeService.delete(id);
+
+        turnOutcomeRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 }

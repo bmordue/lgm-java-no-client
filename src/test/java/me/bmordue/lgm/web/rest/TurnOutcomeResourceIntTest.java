@@ -5,9 +5,6 @@ import me.bmordue.lgm.LgmApp;
 import me.bmordue.lgm.domain.TurnOutcome;
 import me.bmordue.lgm.domain.GameTurn;
 import me.bmordue.lgm.repository.TurnOutcomeRepository;
-import me.bmordue.lgm.service.TurnOutcomeService;
-import me.bmordue.lgm.service.dto.TurnOutcomeDTO;
-import me.bmordue.lgm.service.mapper.TurnOutcomeMapper;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -48,12 +45,6 @@ public class TurnOutcomeResourceIntTest {
     private TurnOutcomeRepository turnOutcomeRepository;
 
     @Autowired
-    private TurnOutcomeMapper turnOutcomeMapper;
-
-    @Autowired
-    private TurnOutcomeService turnOutcomeService;
-
-    @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
     @Autowired
@@ -75,7 +66,7 @@ public class TurnOutcomeResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final TurnOutcomeResource turnOutcomeResource = new TurnOutcomeResource(turnOutcomeService);
+        final TurnOutcomeResource turnOutcomeResource = new TurnOutcomeResource(turnOutcomeRepository);
         this.restTurnOutcomeMockMvc = MockMvcBuilders.standaloneSetup(turnOutcomeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -111,10 +102,9 @@ public class TurnOutcomeResourceIntTest {
         int databaseSizeBeforeCreate = turnOutcomeRepository.findAll().size();
 
         // Create the TurnOutcome
-        TurnOutcomeDTO turnOutcomeDTO = turnOutcomeMapper.toDto(turnOutcome);
         restTurnOutcomeMockMvc.perform(post("/api/turn-outcomes")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(turnOutcomeDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(turnOutcome)))
             .andExpect(status().isCreated());
 
         // Validate the TurnOutcome in the database
@@ -130,12 +120,11 @@ public class TurnOutcomeResourceIntTest {
 
         // Create the TurnOutcome with an existing ID
         turnOutcome.setId(1L);
-        TurnOutcomeDTO turnOutcomeDTO = turnOutcomeMapper.toDto(turnOutcome);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restTurnOutcomeMockMvc.perform(post("/api/turn-outcomes")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(turnOutcomeDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(turnOutcome)))
             .andExpect(status().isBadRequest());
 
         // Validate the TurnOutcome in the database
@@ -189,11 +178,10 @@ public class TurnOutcomeResourceIntTest {
         TurnOutcome updatedTurnOutcome = turnOutcomeRepository.findById(turnOutcome.getId()).get();
         // Disconnect from session so that the updates on updatedTurnOutcome are not directly saved in db
         em.detach(updatedTurnOutcome);
-        TurnOutcomeDTO turnOutcomeDTO = turnOutcomeMapper.toDto(updatedTurnOutcome);
 
         restTurnOutcomeMockMvc.perform(put("/api/turn-outcomes")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(turnOutcomeDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(updatedTurnOutcome)))
             .andExpect(status().isOk());
 
         // Validate the TurnOutcome in the database
@@ -208,12 +196,11 @@ public class TurnOutcomeResourceIntTest {
         int databaseSizeBeforeUpdate = turnOutcomeRepository.findAll().size();
 
         // Create the TurnOutcome
-        TurnOutcomeDTO turnOutcomeDTO = turnOutcomeMapper.toDto(turnOutcome);
 
         // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restTurnOutcomeMockMvc.perform(put("/api/turn-outcomes")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(turnOutcomeDTO)))
+            .content(TestUtil.convertObjectToJsonBytes(turnOutcome)))
             .andExpect(status().isBadRequest());
 
         // Validate the TurnOutcome in the database
@@ -252,28 +239,5 @@ public class TurnOutcomeResourceIntTest {
         assertThat(turnOutcome1).isNotEqualTo(turnOutcome2);
         turnOutcome1.setId(null);
         assertThat(turnOutcome1).isNotEqualTo(turnOutcome2);
-    }
-
-    @Test
-    @Transactional
-    public void dtoEqualsVerifier() throws Exception {
-        TestUtil.equalsVerifier(TurnOutcomeDTO.class);
-        TurnOutcomeDTO turnOutcomeDTO1 = new TurnOutcomeDTO();
-        turnOutcomeDTO1.setId(1L);
-        TurnOutcomeDTO turnOutcomeDTO2 = new TurnOutcomeDTO();
-        assertThat(turnOutcomeDTO1).isNotEqualTo(turnOutcomeDTO2);
-        turnOutcomeDTO2.setId(turnOutcomeDTO1.getId());
-        assertThat(turnOutcomeDTO1).isEqualTo(turnOutcomeDTO2);
-        turnOutcomeDTO2.setId(2L);
-        assertThat(turnOutcomeDTO1).isNotEqualTo(turnOutcomeDTO2);
-        turnOutcomeDTO1.setId(null);
-        assertThat(turnOutcomeDTO1).isNotEqualTo(turnOutcomeDTO2);
-    }
-
-    @Test
-    @Transactional
-    public void testEntityFromId() {
-        assertThat(turnOutcomeMapper.fromId(42L).getId()).isEqualTo(42);
-        assertThat(turnOutcomeMapper.fromId(null)).isNull();
     }
 }

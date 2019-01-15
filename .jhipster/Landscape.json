@@ -26,7 +26,8 @@
     "relationships": [
         {
             "relationshipType": "one-to-one",
-            "relationshipName": "gameTurn",
+            "relationshipValidateRules": "required",
+            "relationshipName": "turn",
             "otherEntityName": "gameTurn",
             "ownerSide": false,
             "otherEntityRelationshipName": "landscape"

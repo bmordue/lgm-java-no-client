@@ -4,6 +4,7 @@ import me.bmordue.lgm.LgmApp;
 
 import me.bmordue.lgm.domain.Landscape;
 import me.bmordue.lgm.domain.GameTurn;
+import me.bmordue.lgm.domain.GameTurn;
 import me.bmordue.lgm.repository.LandscapeRepository;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
@@ -99,6 +100,8 @@ public class LandscapeResourceIntTest {
         GameTurn gameTurn = GameTurnResourceIntTest.createEntity(em);
         em.persist(gameTurn);
         em.flush();
+        landscape.setTurn(gameTurn);
+        // Add required entity
         landscape.setTurn(gameTurn);
         return landscape;
     }
