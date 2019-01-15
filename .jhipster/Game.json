@@ -24,7 +24,7 @@
             "otherEntityRelationshipName": "game"
         }
     ],
-    "changelogDate": "20190115193020",
+    "changelogDate": "20190115210749",
     "entityTableName": "game",
     "dto": "no",
     "pagination": "pagination",
@@ -32,6 +32,8 @@
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*",
+    "applications": [
+        "Lgm"
+    ],
     "skipClient": true
 }

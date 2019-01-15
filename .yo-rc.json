@@ -1,32 +1,39 @@
 {
-  "generator-jhipster": {
-    "promptValues": {
-      "packageName": "me.bmordue.lgm"
+    "generator-jhipster": {
+        "promptValues": {
+            "packageName": "me.bmordue.lgm"
+        },
+        "jhipsterVersion": "5.7.2",
+        "applicationType": "monolith",
+        "baseName": "Lgm",
+        "packageName": "me.bmordue.lgm",
+        "packageFolder": "me/bmordue/lgm",
+        "serverPort": "8080",
+        "authenticationType": "jwt",
+        "cacheProvider": "no",
+        "enableHibernateCache": true,
+        "websocket": false,
+        "databaseType": "sql",
+        "devDatabaseType": "h2Disk",
+        "prodDatabaseType": "mysql",
+        "searchEngine": false,
+        "messageBroker": false,
+        "serviceDiscoveryType": false,
+        "buildTool": "maven",
+        "enableSwaggerCodegen": true,
+        "jwtSecretKey": "YzZlYWM3MGU1YzdmYmMwYzA1MDE4MmY2YjE0OTJmNzI2MTY3MWZkNWRmNzEwYTE5NTliOGQ3NDAzMDdiOTdmMzVkM2VkZTkxMWIzMjQ3ZmMyZDU5MmFhYTgyMWY0MGJhMzA1OTI1ZDM3YTc1ODM3NzYwNWQ5MGU0M2ZjYjI5NzQ=",
+        "testFrameworks": [],
+        "jhiPrefix": "jhi",
+        "otherModules": [],
+        "enableTranslation": true,
+        "clientPackageManager": "npm",
+        "skipClient": false,
+        "languages": ["en", "fr"],
+        "nativeLanguage": "en",
+        "skipServer": false,
+        "skipUserManagement": false,
+        "clientFramework": "angularX",
+        "useSass": true
     },
-    "jhipsterVersion": "5.7.2",
-    "applicationType": "monolith",
-    "baseName": "lgm",
-    "packageName": "me.bmordue.lgm",
-    "packageFolder": "me/bmordue/lgm",
-    "serverPort": "8080",
-    "authenticationType": "jwt",
-    "cacheProvider": "hazelcast",
-    "enableHibernateCache": false,
-    "websocket": "spring-websocket",
-    "databaseType": "sql",
-    "devDatabaseType": "h2Disk",
-    "prodDatabaseType": "postgresql",
-    "searchEngine": false,
-    "messageBroker": false,
-    "serviceDiscoveryType": false,
-    "buildTool": "maven",
-    "enableSwaggerCodegen": true,
-    "jwtSecretKey": "YzZlYWM3MGU1YzdmYmMwYzA1MDE4MmY2YjE0OTJmNzI2MTY3MWZkNWRmNzEwYTE5NTliOGQ3NDAzMDdiOTdmMzVkM2VkZTkxMWIzMjQ3ZmMyZDU5MmFhYTgyMWY0MGJhMzA1OTI1ZDM3YTc1ODM3NzYwNWQ5MGU0M2ZjYjI5NzQ=",
-    "testFrameworks": [],
-    "jhiPrefix": "jhi",
-    "otherModules": [],
-    "enableTranslation": false,
-    "clientPackageManager": "npm",
-    "skipClient": true
-  }
+    "entities": ["Game", "TurnOutcome", "GameTurn", "Player", "Actor", "Landscape", "ActorCommand", "PlayerTurn"]
 }

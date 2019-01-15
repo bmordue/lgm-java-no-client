@@ -23,7 +23,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190115193027",
+    "changelogDate": "20190115210756",
     "entityTableName": "player_turn",
     "dto": "no",
     "pagination": "pagination",
@@ -31,6 +31,8 @@
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*",
+    "applications": [
+        "Lgm"
+    ],
     "skipClient": true
 }

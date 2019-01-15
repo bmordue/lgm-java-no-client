@@ -2,6 +2,8 @@ package me.bmordue.lgm.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
@@ -16,13 +18,13 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "game_turn")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class GameTurn implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -33,8 +35,10 @@ public class GameTurn implements Serializable {
     private TurnOutcome outcome;
 
     @OneToMany(mappedBy = "turn")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Actor> actors = new HashSet<>();
     @OneToMany(mappedBy = "turn")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<PlayerTurn> playerTurns = new HashSet<>();
     @ManyToOne(optional = false)
     @NotNull

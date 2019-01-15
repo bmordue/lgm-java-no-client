@@ -11,7 +11,7 @@
             "otherEntityRelationshipName": "outcome"
         }
     ],
-    "changelogDate": "20190115193021",
+    "changelogDate": "20190115210750",
     "entityTableName": "turn_outcome",
     "dto": "no",
     "pagination": "pagination",
@@ -19,6 +19,8 @@
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*",
+    "applications": [
+        "Lgm"
+    ],
     "skipClient": true
 }
