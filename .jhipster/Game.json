@@ -24,7 +24,7 @@
             "otherEntityRelationshipName": "game"
         }
     ],
-    "changelogDate": "20190110213045",
+    "changelogDate": "20190115193020",
     "entityTableName": "game",
     "dto": "no",
     "pagination": "pagination",

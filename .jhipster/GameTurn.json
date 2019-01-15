@@ -39,7 +39,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190114221208",
+    "changelogDate": "20190115193022",
     "entityTableName": "game_turn",
     "dto": "no",
     "pagination": "pagination",

@@ -46,7 +46,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190110213048",
+    "changelogDate": "20190115193024",
     "entityTableName": "actor",
     "dto": "no",
     "pagination": "pagination",

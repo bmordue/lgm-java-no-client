@@ -30,7 +30,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190110213047",
+    "changelogDate": "20190115193023",
     "entityTableName": "player",
     "dto": "no",
     "pagination": "pagination",

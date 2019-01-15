@@ -25,7 +25,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190114221212",
+    "changelogDate": "20190115193026",
     "entityTableName": "actor_command",
     "dto": "no",
     "pagination": "pagination",

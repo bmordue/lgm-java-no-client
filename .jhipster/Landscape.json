@@ -33,7 +33,7 @@
             "otherEntityRelationshipName": "landscape"
         }
     ],
-    "changelogDate": "20190110213049",
+    "changelogDate": "20190115193025",
     "entityTableName": "landscape",
     "dto": "no",
     "pagination": "pagination",

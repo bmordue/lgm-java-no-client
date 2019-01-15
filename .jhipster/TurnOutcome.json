@@ -11,7 +11,7 @@
             "otherEntityRelationshipName": "outcome"
         }
     ],
-    "changelogDate": "20190114221207",
+    "changelogDate": "20190115193021",
     "entityTableName": "turn_outcome",
     "dto": "no",
     "pagination": "pagination",
