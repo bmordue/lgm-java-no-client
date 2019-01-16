@@ -94,11 +94,11 @@ public class LandscapeResource {
     @GetMapping("/landscapes")
     @Timed
     public ResponseEntity<List<Landscape>> getAllLandscapes(Pageable pageable, @RequestParam(required = false) String filter) {
-        if ("turn-is-null".equals(filter)) {
-            log.debug("REST request to get all Landscapes where turn is null");
+        if ("game-is-null".equals(filter)) {
+            log.debug("REST request to get all Landscapes where game is null");
             return new ResponseEntity<>(StreamSupport
                 .stream(landscapeRepository.findAll().spliterator(), false)
-                .filter(landscape -> landscape.getTurn() == null)
+                .filter(landscape -> landscape.getGame() == null)
                 .collect(Collectors.toList()), HttpStatus.OK);
         }
         log.debug("REST request to get a page of Landscapes");

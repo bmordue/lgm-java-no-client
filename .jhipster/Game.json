@@ -4,12 +4,11 @@
     "relationships": [
         {
             "relationshipType": "one-to-one",
-            "relationshipValidateRules": "required",
             "relationshipName": "landscape",
             "otherEntityName": "landscape",
             "otherEntityField": "id",
             "ownerSide": true,
-            "otherEntityRelationshipName": "turn"
+            "otherEntityRelationshipName": "game"
         },
         {
             "relationshipType": "one-to-many",

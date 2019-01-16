@@ -38,7 +38,7 @@ public class Landscape implements Serializable {
 
     @OneToOne(mappedBy = "landscape")
     @JsonIgnore
-    private Game turn;
+    private Game game;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -88,17 +88,17 @@ public class Landscape implements Serializable {
         this.cells = cells;
     }
 
-    public Game getTurn() {
-        return turn;
+    public Game getGame() {
+        return game;
     }
 
-    public Landscape turn(Game game) {
-        this.turn = game;
+    public Landscape game(Game game) {
+        this.game = game;
         return this;
     }
 
-    public void setTurn(Game game) {
-        this.turn = game;
+    public void setGame(Game game) {
+        this.game = game;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

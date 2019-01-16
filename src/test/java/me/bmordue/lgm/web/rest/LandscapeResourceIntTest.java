@@ -99,7 +99,7 @@ public class LandscapeResourceIntTest {
         Game game = GameResourceIntTest.createEntity(em);
         em.persist(game);
         em.flush();
-        landscape.setTurn(game);
+        landscape.setGame(game);
         return landscape;
     }
 

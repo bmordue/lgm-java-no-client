@@ -57,7 +57,7 @@ entity Landscape {
 }
 
 relationship OneToOne {
-	Game{landscape required} to Landscape{turn required}
+	Game{landscape} to Landscape{game required}
 }
 
 enum Direction {

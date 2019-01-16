@@ -5,7 +5,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -26,8 +25,7 @@ public class Game implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(optional = false)    @NotNull
-    @JoinColumn(unique = true)
+    @OneToOne    @JoinColumn(unique = true)
     private Landscape landscape;
 
     @OneToMany(mappedBy = "game")
