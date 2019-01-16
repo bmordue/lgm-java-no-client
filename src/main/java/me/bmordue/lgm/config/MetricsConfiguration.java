@@ -7,6 +7,7 @@ import com.codahale.metrics.JvmAttributeGaugeSet;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.Slf4jReporter;
 import com.codahale.metrics.health.HealthCheckRegistry;
+import com.codahale.metrics.jcache.JCacheGaugeSet;
 import com.codahale.metrics.jvm.*;
 import com.ryantenney.metrics.spring.config.annotation.EnableMetrics;
 import com.ryantenney.metrics.spring.config.annotation.MetricsConfigurerAdapter;
@@ -20,6 +21,7 @@ import org.slf4j.Marker;
 import org.slf4j.MarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -38,6 +40,8 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter implements Se
     private static final String PROP_METRIC_REG_JVM_BUFFERS = "jvm.buffers";
     private static final String PROP_METRIC_REG_JVM_ATTRIBUTE_SET = "jvm.attributes";
 
+    private static final String PROP_METRIC_REG_JCACHE_STATISTICS = "jcache.statistics";
+
     private final Logger log = LoggerFactory.getLogger(MetricsConfiguration.class);
 
     private MetricRegistry metricRegistry = new MetricRegistry();
@@ -48,7 +52,9 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter implements Se
 
     private HikariDataSource hikariDataSource;
 
-    public MetricsConfiguration(JHipsterProperties jHipsterProperties) {
+    // The cacheManager is injected here to force its initialization, so the JCacheGaugeSet
+    // will be correctly created below.
+    public MetricsConfiguration(JHipsterProperties jHipsterProperties, CacheManager cacheManager) {
         this.jHipsterProperties = jHipsterProperties;
     }
 
@@ -78,6 +84,7 @@ public class MetricsConfiguration extends MetricsConfigurerAdapter implements Se
         metricRegistry.register(PROP_METRIC_REG_JVM_FILES, new FileDescriptorRatioGauge());
         metricRegistry.register(PROP_METRIC_REG_JVM_BUFFERS, new BufferPoolMetricSet(ManagementFactory.getPlatformMBeanServer()));
         metricRegistry.register(PROP_METRIC_REG_JVM_ATTRIBUTE_SET, new JvmAttributeGaugeSet());
+        metricRegistry.register(PROP_METRIC_REG_JCACHE_STATISTICS, new JCacheGaugeSet());
         if (hikariDataSource != null) {
             log.debug("Monitoring the datasource");
             // remove the factory created by HikariDataSourceMetricsPostProcessor until JHipster migrate to Micrometer

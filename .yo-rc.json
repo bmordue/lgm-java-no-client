@@ -10,7 +10,7 @@
         "packageFolder": "me/bmordue/lgm",
         "serverPort": "8080",
         "authenticationType": "jwt",
-        "cacheProvider": "no",
+        "cacheProvider": "ehcache",
         "enableHibernateCache": true,
         "websocket": false,
         "databaseType": "sql",
