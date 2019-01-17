@@ -9,6 +9,7 @@ import me.bmordue.lgm.repository.PlayerTurnRepository;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
@@ -103,6 +104,7 @@ public class PlayerTurnResourceIntTest {
     }
 
     @Test
+    @Ignore
     @Transactional
     public void createPlayerTurn() throws Exception {
         int databaseSizeBeforeCreate = playerTurnRepository.findAll().size();
@@ -173,6 +175,7 @@ public class PlayerTurnResourceIntTest {
     }
 
     @Test
+    @Ignore
     @Transactional
     public void updatePlayerTurn() throws Exception {
         // Initialize the database
