@@ -1,8 +1,18 @@
 
 entity Game {}
 
-entity Turn {
-	number Integer required unique
+entity TurnOutcome {}
+
+entity GameTurn {
+	turnNumber Integer required unique
+}
+
+relationship OneToOne {
+    GameTurn{outcome} to TurnOutcome{turn required}
+}
+
+relationship OneToMany {
+    GameTurn to Actor{turn required}
 }
 
 entity Player {
@@ -14,7 +24,7 @@ relationship OneToMany {
 }
 
 relationship OneToMany {
-	Game to Turn{game required}
+	Game to GameTurn{game required}
 }
 
 enum ActorState {
@@ -23,6 +33,8 @@ enum ActorState {
 
 entity Actor {
 	state ActorState required
+	posX Integer required
+	posY Integer required
 }
 
 relationship OneToMany {
@@ -36,28 +48,35 @@ entity Landscape {
 }
 
 relationship OneToOne {
-	Turn to Landscape
+	Game{landscape required} to Landscape{turn required}
 }
 
 enum Direction {
 	UP_LEFT, UP_RIGHT, RIGHT, DOWN_RIGHT, DOWN_LEFT, LEFT, CENTRE
 }
 
-entity GameOrder {
+entity ActorCommand {
     direction Direction required
 }
 
 relationship OneToMany {
-	Actor to GameOrder{actor required}
+	Actor to ActorCommand{actor required}
+}
+
+entity PlayerTurn {}
+
+relationship OneToMany {
+	GameTurn to PlayerTurn{turn required}
 }
 
 relationship OneToMany {
-	Turn to GameOrder{turn required}
+    Player to PlayerTurn{player required}
 }
 
+relationship OneToMany {
+    PlayerTurn to ActorCommand
+}
 
 paginate * with pagination
 
-skipClient GameOrder
-skipClient Actor
-skipClient Landscape
+skipClient *

@@ -16,12 +16,12 @@
 
 spring:
     application:
-        name: lgm
+        name: Lgm
     cache:
         type: simple
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:h2:mem:lgm;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+        url: jdbc:h2:mem:Lgm;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
         name:
         username:
         password:
@@ -45,11 +45,6 @@ spring:
             hibernate.generate_statistics: true
             hibernate.hbm2ddl.auto: validate
             hibernate.jdbc.time_zone: UTC
-    data:
-        elasticsearch:
-            properties:
-                path:
-                    home: target/elasticsearch
     liquibase:
         contexts: test
     mail:

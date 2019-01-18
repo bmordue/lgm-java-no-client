@@ -1,116 +1,60 @@
 package me.bmordue.lgm.config;
 
-import io.github.jhipster.config.JHipsterConstants;
+import java.time.Duration;
+
+import org.ehcache.config.builders.*;
+import org.ehcache.jsr107.Eh107Configuration;
+
+import io.github.jhipster.config.jcache.BeanClassLoaderAwareJCacheRegionFactory;
 import io.github.jhipster.config.JHipsterProperties;
 
-import com.hazelcast.config.*;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.Hazelcast;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.cache.CacheManager;
+import org.springframework.boot.autoconfigure.cache.JCacheManagerCustomizer;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.*;
-import org.springframework.core.env.Environment;
-
-import javax.annotation.PreDestroy;
 
 @Configuration
 @EnableCaching
 public class CacheConfiguration {
 
-    private final Logger log = LoggerFactory.getLogger(CacheConfiguration.class);
+    private final javax.cache.configuration.Configuration<Object, Object> jcacheConfiguration;
 
-    private final Environment env;
+    public CacheConfiguration(JHipsterProperties jHipsterProperties) {
+        BeanClassLoaderAwareJCacheRegionFactory.setBeanClassLoader(this.getClass().getClassLoader());
+        JHipsterProperties.Cache.Ehcache ehcache =
+            jHipsterProperties.getCache().getEhcache();
 
-    public CacheConfiguration(Environment env) {
-        this.env = env;
-    }
-
-    @PreDestroy
-    public void destroy() {
-        log.info("Closing Cache Manager");
-        Hazelcast.shutdownAll();
-    }
-
-    @Bean
-    public CacheManager cacheManager(HazelcastInstance hazelcastInstance) {
-        log.debug("Starting HazelcastCacheManager");
-        CacheManager cacheManager = new com.hazelcast.spring.cache.HazelcastCacheManager(hazelcastInstance);
-        return cacheManager;
+        jcacheConfiguration = Eh107Configuration.fromEhcacheCacheConfiguration(
+            CacheConfigurationBuilder.newCacheConfigurationBuilder(Object.class, Object.class,
+                ResourcePoolsBuilder.heap(ehcache.getMaxEntries()))
+                .withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(ehcache.getTimeToLiveSeconds())))
+                .build());
     }
 
     @Bean
-    public HazelcastInstance hazelcastInstance(JHipsterProperties jHipsterProperties) {
-        log.debug("Configuring Hazelcast");
-        HazelcastInstance hazelCastInstance = Hazelcast.getHazelcastInstanceByName("lgm");
-        if (hazelCastInstance != null) {
-            log.debug("Hazelcast already initialized");
-            return hazelCastInstance;
-        }
-        Config config = new Config();
-        config.setInstanceName("lgm");
-        config.getNetworkConfig().setPort(5701);
-        config.getNetworkConfig().setPortAutoIncrement(true);
-
-        // In development, remove multicast auto-configuration
-        if (env.acceptsProfiles(JHipsterConstants.SPRING_PROFILE_DEVELOPMENT)) {
-            System.setProperty("hazelcast.local.localAddress", "127.0.0.1");
-
-            config.getNetworkConfig().getJoin().getAwsConfig().setEnabled(false);
-            config.getNetworkConfig().getJoin().getMulticastConfig().setEnabled(false);
-            config.getNetworkConfig().getJoin().getTcpIpConfig().setEnabled(false);
-        }
-        config.getMapConfigs().put("default", initializeDefaultMapConfig(jHipsterProperties));
-
-        // Full reference is available at: http://docs.hazelcast.org/docs/management-center/3.9/manual/html/Deploying_and_Starting.html
-        config.setManagementCenterConfig(initializeDefaultManagementCenterConfig(jHipsterProperties));
-        return Hazelcast.newHazelcastInstance(config);
-    }
-
-    private ManagementCenterConfig initializeDefaultManagementCenterConfig(JHipsterProperties jHipsterProperties) {
-        ManagementCenterConfig managementCenterConfig = new ManagementCenterConfig();
-        managementCenterConfig.setEnabled(jHipsterProperties.getCache().getHazelcast().getManagementCenter().isEnabled());
-        managementCenterConfig.setUrl(jHipsterProperties.getCache().getHazelcast().getManagementCenter().getUrl());
-        managementCenterConfig.setUpdateInterval(jHipsterProperties.getCache().getHazelcast().getManagementCenter().getUpdateInterval());
-        return managementCenterConfig;
-    }
-
-    private MapConfig initializeDefaultMapConfig(JHipsterProperties jHipsterProperties) {
-        MapConfig mapConfig = new MapConfig();
-
-        /*
-        Number of backups. If 1 is set as the backup-count for example,
-        then all entries of the map will be copied to another JVM for
-        fail-safety. Valid numbers are 0 (no backup), 1, 2, 3.
-        */
-        mapConfig.setBackupCount(jHipsterProperties.getCache().getHazelcast().getBackupCount());
-
-        /*
-        Valid values are:
-        NONE (no eviction),
-        LRU (Least Recently Used),
-        LFU (Least Frequently Used).
-        NONE is the default.
-        */
-        mapConfig.setEvictionPolicy(EvictionPolicy.LRU);
-
-        /*
-        Maximum size of the map. When max size is reached,
-        map is evicted based on the policy defined.
-        Any integer between 0 and Integer.MAX_VALUE. 0 means
-        Integer.MAX_VALUE. Default is 0.
-        */
-        mapConfig.setMaxSizeConfig(new MaxSizeConfig(0, MaxSizeConfig.MaxSizePolicy.USED_HEAP_SIZE));
-
-        return mapConfig;
-    }
-
-    private MapConfig initializeDomainMapConfig(JHipsterProperties jHipsterProperties) {
-        MapConfig mapConfig = new MapConfig();
-        mapConfig.setTimeToLiveSeconds(jHipsterProperties.getCache().getHazelcast().getTimeToLiveSeconds());
-        return mapConfig;
+    public JCacheManagerCustomizer cacheManagerCustomizer() {
+        return cm -> {
+            cm.createCache(me.bmordue.lgm.repository.UserRepository.USERS_BY_LOGIN_CACHE, jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.repository.UserRepository.USERS_BY_EMAIL_CACHE, jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.User.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Authority.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.User.class.getName() + ".authorities", jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Game.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Game.class.getName() + ".players", jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Game.class.getName() + ".gameTurns", jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.TurnOutcome.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.GameTurn.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.GameTurn.class.getName() + ".actors", jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.GameTurn.class.getName() + ".playerTurns", jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Player.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Player.class.getName() + ".actors", jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Player.class.getName() + ".playerTurns", jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Actor.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Actor.class.getName() + ".actorCommands", jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.Landscape.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.ActorCommand.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.PlayerTurn.class.getName(), jcacheConfiguration);
+            cm.createCache(me.bmordue.lgm.domain.PlayerTurn.class.getName() + ".actorCommands", jcacheConfiguration);
+            // jhipster-needle-ehcache-add-entry
+        };
     }
 }

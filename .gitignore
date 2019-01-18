@@ -1,6 +1,7 @@
 ######################
 # Project Specific
 ######################
+/src/main/webapp/content/css/main.css
 /target/www/**
 /src/test/javascript/coverage/
 
@@ -143,9 +144,6 @@ Desktop.ini
 ######################
 .eslintcache
 
-
-###
-# Others
-###
-.env
+.env*
+sonar.sh
 

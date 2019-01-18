@@ -8,14 +8,35 @@
             "fieldValidateRules": [
                 "required"
             ]
+        },
+        {
+            "fieldName": "posX",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "posY",
+            "fieldType": "Integer",
+            "fieldValidateRules": [
+                "required"
+            ]
         }
     ],
     "relationships": [
         {
             "relationshipType": "one-to-many",
-            "relationshipName": "gameOrder",
-            "otherEntityName": "gameOrder",
+            "relationshipName": "actorCommand",
+            "otherEntityName": "actorCommand",
             "otherEntityRelationshipName": "actor"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "turn",
+            "otherEntityName": "gameTurn",
+            "otherEntityField": "id"
         },
         {
             "relationshipType": "many-to-one",
@@ -25,7 +46,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190110213048",
+    "changelogDate": "20190115210753",
     "entityTableName": "actor",
     "dto": "no",
     "pagination": "pagination",
@@ -33,6 +54,8 @@
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*",
+    "applications": [
+        "Lgm"
+    ],
     "skipClient": true
 }

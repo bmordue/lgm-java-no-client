@@ -2,11 +2,12 @@ package me.bmordue.lgm.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,14 +18,13 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "player")
-@Document(indexName = "player")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Player implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -32,7 +32,11 @@ public class Player implements Serializable {
     private String name;
 
     @OneToMany(mappedBy = "player")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Actor> actors = new HashSet<>();
+    @OneToMany(mappedBy = "player")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<PlayerTurn> playerTurns = new HashSet<>();
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("players")
@@ -83,6 +87,31 @@ public class Player implements Serializable {
 
     public void setActors(Set<Actor> actors) {
         this.actors = actors;
+    }
+
+    public Set<PlayerTurn> getPlayerTurns() {
+        return playerTurns;
+    }
+
+    public Player playerTurns(Set<PlayerTurn> playerTurns) {
+        this.playerTurns = playerTurns;
+        return this;
+    }
+
+    public Player addPlayerTurn(PlayerTurn playerTurn) {
+        this.playerTurns.add(playerTurn);
+        playerTurn.setPlayer(this);
+        return this;
+    }
+
+    public Player removePlayerTurn(PlayerTurn playerTurn) {
+        this.playerTurns.remove(playerTurn);
+        playerTurn.setPlayer(null);
+        return this;
+    }
+
+    public void setPlayerTurns(Set<PlayerTurn> playerTurns) {
+        this.playerTurns = playerTurns;
     }
 
     public Game getGame() {

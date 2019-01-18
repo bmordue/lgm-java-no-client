@@ -2,11 +2,12 @@ package me.bmordue.lgm.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,14 +20,13 @@ import me.bmordue.lgm.domain.enumeration.ActorState;
  */
 @Entity
 @Table(name = "actor")
-@Document(indexName = "actor")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Actor implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -34,8 +34,22 @@ public class Actor implements Serializable {
     @Column(name = "state", nullable = false)
     private ActorState state;
 
+    @NotNull
+    @Column(name = "pos_x", nullable = false)
+    private Integer posX;
+
+    @NotNull
+    @Column(name = "pos_y", nullable = false)
+    private Integer posY;
+
     @OneToMany(mappedBy = "actor")
-    private Set<GameOrder> gameOrders = new HashSet<>();
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<ActorCommand> actorCommands = new HashSet<>();
+    @ManyToOne(optional = false)
+    @NotNull
+    @JsonIgnoreProperties("actors")
+    private GameTurn turn;
+
     @ManyToOne(optional = false)
     @NotNull
     @JsonIgnoreProperties("actors")
@@ -63,29 +77,68 @@ public class Actor implements Serializable {
         this.state = state;
     }
 
-    public Set<GameOrder> getGameOrders() {
-        return gameOrders;
+    public Integer getPosX() {
+        return posX;
     }
 
-    public Actor gameOrders(Set<GameOrder> gameOrders) {
-        this.gameOrders = gameOrders;
+    public Actor posX(Integer posX) {
+        this.posX = posX;
         return this;
     }
 
-    public Actor addGameOrder(GameOrder gameOrder) {
-        this.gameOrders.add(gameOrder);
-        gameOrder.setActor(this);
+    public void setPosX(Integer posX) {
+        this.posX = posX;
+    }
+
+    public Integer getPosY() {
+        return posY;
+    }
+
+    public Actor posY(Integer posY) {
+        this.posY = posY;
         return this;
     }
 
-    public Actor removeGameOrder(GameOrder gameOrder) {
-        this.gameOrders.remove(gameOrder);
-        gameOrder.setActor(null);
+    public void setPosY(Integer posY) {
+        this.posY = posY;
+    }
+
+    public Set<ActorCommand> getActorCommands() {
+        return actorCommands;
+    }
+
+    public Actor actorCommands(Set<ActorCommand> actorCommands) {
+        this.actorCommands = actorCommands;
         return this;
     }
 
-    public void setGameOrders(Set<GameOrder> gameOrders) {
-        this.gameOrders = gameOrders;
+    public Actor addActorCommand(ActorCommand actorCommand) {
+        this.actorCommands.add(actorCommand);
+        actorCommand.setActor(this);
+        return this;
+    }
+
+    public Actor removeActorCommand(ActorCommand actorCommand) {
+        this.actorCommands.remove(actorCommand);
+        actorCommand.setActor(null);
+        return this;
+    }
+
+    public void setActorCommands(Set<ActorCommand> actorCommands) {
+        this.actorCommands = actorCommands;
+    }
+
+    public GameTurn getTurn() {
+        return turn;
+    }
+
+    public Actor turn(GameTurn gameTurn) {
+        this.turn = gameTurn;
+        return this;
+    }
+
+    public void setTurn(GameTurn gameTurn) {
+        this.turn = gameTurn;
     }
 
     public Player getPlayer() {
@@ -127,6 +180,8 @@ public class Actor implements Serializable {
         return "Actor{" +
             "id=" + getId() +
             ", state='" + getState() + "'" +
+            ", posX=" + getPosX() +
+            ", posY=" + getPosY() +
             "}";
     }
 }

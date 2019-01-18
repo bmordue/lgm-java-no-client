@@ -3,9 +3,9 @@ package me.bmordue.lgm.web.rest;
 import me.bmordue.lgm.LgmApp;
 
 import me.bmordue.lgm.domain.Actor;
+import me.bmordue.lgm.domain.GameTurn;
 import me.bmordue.lgm.domain.Player;
 import me.bmordue.lgm.repository.ActorRepository;
-import me.bmordue.lgm.repository.search.ActorSearchRepository;
 import me.bmordue.lgm.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -14,8 +14,6 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -26,15 +24,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
-import java.util.Collections;
 import java.util.List;
 
 
 import static me.bmordue.lgm.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
-import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,16 +46,14 @@ public class ActorResourceIntTest {
     private static final ActorState DEFAULT_STATE = ActorState.ALIVE;
     private static final ActorState UPDATED_STATE = ActorState.DEAD;
 
+    private static final Integer DEFAULT_POS_X = 1;
+    private static final Integer UPDATED_POS_X = 2;
+
+    private static final Integer DEFAULT_POS_Y = 1;
+    private static final Integer UPDATED_POS_Y = 2;
+
     @Autowired
     private ActorRepository actorRepository;
-
-    /**
-     * This repository is mocked in the me.bmordue.lgm.repository.search test package.
-     *
-     * @see me.bmordue.lgm.repository.search.ActorSearchRepositoryMockConfiguration
-     */
-    @Autowired
-    private ActorSearchRepository mockActorSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -84,7 +77,7 @@ public class ActorResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ActorResource actorResource = new ActorResource(actorRepository, mockActorSearchRepository);
+        final ActorResource actorResource = new ActorResource(actorRepository);
         this.restActorMockMvc = MockMvcBuilders.standaloneSetup(actorResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -101,7 +94,14 @@ public class ActorResourceIntTest {
      */
     public static Actor createEntity(EntityManager em) {
         Actor actor = new Actor()
-            .state(DEFAULT_STATE);
+            .state(DEFAULT_STATE)
+            .posX(DEFAULT_POS_X)
+            .posY(DEFAULT_POS_Y);
+        // Add required entity
+        GameTurn gameTurn = GameTurnResourceIntTest.createEntity(em);
+        em.persist(gameTurn);
+        em.flush();
+        actor.setTurn(gameTurn);
         // Add required entity
         Player player = PlayerResourceIntTest.createEntity(em);
         em.persist(player);
@@ -131,9 +131,8 @@ public class ActorResourceIntTest {
         assertThat(actorList).hasSize(databaseSizeBeforeCreate + 1);
         Actor testActor = actorList.get(actorList.size() - 1);
         assertThat(testActor.getState()).isEqualTo(DEFAULT_STATE);
-
-        // Validate the Actor in Elasticsearch
-        verify(mockActorSearchRepository, times(1)).save(testActor);
+        assertThat(testActor.getPosX()).isEqualTo(DEFAULT_POS_X);
+        assertThat(testActor.getPosY()).isEqualTo(DEFAULT_POS_Y);
     }
 
     @Test
@@ -153,9 +152,6 @@ public class ActorResourceIntTest {
         // Validate the Actor in the database
         List<Actor> actorList = actorRepository.findAll();
         assertThat(actorList).hasSize(databaseSizeBeforeCreate);
-
-        // Validate the Actor in Elasticsearch
-        verify(mockActorSearchRepository, times(0)).save(actor);
     }
 
     @Test
@@ -164,6 +160,42 @@ public class ActorResourceIntTest {
         int databaseSizeBeforeTest = actorRepository.findAll().size();
         // set the field null
         actor.setState(null);
+
+        // Create the Actor, which fails.
+
+        restActorMockMvc.perform(post("/api/actors")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(actor)))
+            .andExpect(status().isBadRequest());
+
+        List<Actor> actorList = actorRepository.findAll();
+        assertThat(actorList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkPosXIsRequired() throws Exception {
+        int databaseSizeBeforeTest = actorRepository.findAll().size();
+        // set the field null
+        actor.setPosX(null);
+
+        // Create the Actor, which fails.
+
+        restActorMockMvc.perform(post("/api/actors")
+            .contentType(TestUtil.APPLICATION_JSON_UTF8)
+            .content(TestUtil.convertObjectToJsonBytes(actor)))
+            .andExpect(status().isBadRequest());
+
+        List<Actor> actorList = actorRepository.findAll();
+        assertThat(actorList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    @Transactional
+    public void checkPosYIsRequired() throws Exception {
+        int databaseSizeBeforeTest = actorRepository.findAll().size();
+        // set the field null
+        actor.setPosY(null);
 
         // Create the Actor, which fails.
 
@@ -187,7 +219,9 @@ public class ActorResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(actor.getId().intValue())))
-            .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE.toString())));
+            .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE.toString())))
+            .andExpect(jsonPath("$.[*].posX").value(hasItem(DEFAULT_POS_X)))
+            .andExpect(jsonPath("$.[*].posY").value(hasItem(DEFAULT_POS_Y)));
     }
     
     @Test
@@ -201,7 +235,9 @@ public class ActorResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(actor.getId().intValue()))
-            .andExpect(jsonPath("$.state").value(DEFAULT_STATE.toString()));
+            .andExpect(jsonPath("$.state").value(DEFAULT_STATE.toString()))
+            .andExpect(jsonPath("$.posX").value(DEFAULT_POS_X))
+            .andExpect(jsonPath("$.posY").value(DEFAULT_POS_Y));
     }
 
     @Test
@@ -225,7 +261,9 @@ public class ActorResourceIntTest {
         // Disconnect from session so that the updates on updatedActor are not directly saved in db
         em.detach(updatedActor);
         updatedActor
-            .state(UPDATED_STATE);
+            .state(UPDATED_STATE)
+            .posX(UPDATED_POS_X)
+            .posY(UPDATED_POS_Y);
 
         restActorMockMvc.perform(put("/api/actors")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -237,9 +275,8 @@ public class ActorResourceIntTest {
         assertThat(actorList).hasSize(databaseSizeBeforeUpdate);
         Actor testActor = actorList.get(actorList.size() - 1);
         assertThat(testActor.getState()).isEqualTo(UPDATED_STATE);
-
-        // Validate the Actor in Elasticsearch
-        verify(mockActorSearchRepository, times(1)).save(testActor);
+        assertThat(testActor.getPosX()).isEqualTo(UPDATED_POS_X);
+        assertThat(testActor.getPosY()).isEqualTo(UPDATED_POS_Y);
     }
 
     @Test
@@ -258,9 +295,6 @@ public class ActorResourceIntTest {
         // Validate the Actor in the database
         List<Actor> actorList = actorRepository.findAll();
         assertThat(actorList).hasSize(databaseSizeBeforeUpdate);
-
-        // Validate the Actor in Elasticsearch
-        verify(mockActorSearchRepository, times(0)).save(actor);
     }
 
     @Test
@@ -279,24 +313,6 @@ public class ActorResourceIntTest {
         // Validate the database is empty
         List<Actor> actorList = actorRepository.findAll();
         assertThat(actorList).hasSize(databaseSizeBeforeDelete - 1);
-
-        // Validate the Actor in Elasticsearch
-        verify(mockActorSearchRepository, times(1)).deleteById(actor.getId());
-    }
-
-    @Test
-    @Transactional
-    public void searchActor() throws Exception {
-        // Initialize the database
-        actorRepository.saveAndFlush(actor);
-        when(mockActorSearchRepository.search(queryStringQuery("id:" + actor.getId()), PageRequest.of(0, 20)))
-            .thenReturn(new PageImpl<>(Collections.singletonList(actor), PageRequest.of(0, 1), 1));
-        // Search the actor
-        restActorMockMvc.perform(get("/api/_search/actors?query=id:" + actor.getId()))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(actor.getId().intValue())))
-            .andExpect(jsonPath("$.[*].state").value(hasItem(DEFAULT_STATE.toString())));
     }
 
     @Test

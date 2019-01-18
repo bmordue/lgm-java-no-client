@@ -1,0 +1,38 @@
+{
+    "name": "PlayerTurn",
+    "fields": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "actorCommand",
+            "otherEntityName": "actorCommand",
+            "otherEntityRelationshipName": "playerTurn"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "turn",
+            "otherEntityName": "gameTurn",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "player",
+            "otherEntityName": "player",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190115210756",
+    "entityTableName": "player_turn",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": [
+        "Lgm"
+    ],
+    "skipClient": true
+}

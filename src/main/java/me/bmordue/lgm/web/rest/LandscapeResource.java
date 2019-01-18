@@ -3,7 +3,6 @@ package me.bmordue.lgm.web.rest;
 import com.codahale.metrics.annotation.Timed;
 import me.bmordue.lgm.domain.Landscape;
 import me.bmordue.lgm.repository.LandscapeRepository;
-import me.bmordue.lgm.repository.search.LandscapeSearchRepository;
 import me.bmordue.lgm.web.rest.errors.BadRequestAlertException;
 import me.bmordue.lgm.web.rest.util.HeaderUtil;
 import me.bmordue.lgm.web.rest.util.PaginationUtil;
@@ -26,8 +25,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
 /**
  * REST controller for managing Landscape.
  */
@@ -41,11 +38,8 @@ public class LandscapeResource {
 
     private final LandscapeRepository landscapeRepository;
 
-    private final LandscapeSearchRepository landscapeSearchRepository;
-
-    public LandscapeResource(LandscapeRepository landscapeRepository, LandscapeSearchRepository landscapeSearchRepository) {
+    public LandscapeResource(LandscapeRepository landscapeRepository) {
         this.landscapeRepository = landscapeRepository;
-        this.landscapeSearchRepository = landscapeSearchRepository;
     }
 
     /**
@@ -63,7 +57,6 @@ public class LandscapeResource {
             throw new BadRequestAlertException("A new landscape cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Landscape result = landscapeRepository.save(landscape);
-        landscapeSearchRepository.save(result);
         return ResponseEntity.created(new URI("/api/landscapes/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -86,7 +79,6 @@ public class LandscapeResource {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Landscape result = landscapeRepository.save(landscape);
-        landscapeSearchRepository.save(result);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, landscape.getId().toString()))
             .body(result);
@@ -102,11 +94,11 @@ public class LandscapeResource {
     @GetMapping("/landscapes")
     @Timed
     public ResponseEntity<List<Landscape>> getAllLandscapes(Pageable pageable, @RequestParam(required = false) String filter) {
-        if ("turn-is-null".equals(filter)) {
-            log.debug("REST request to get all Landscapes where turn is null");
+        if ("game-is-null".equals(filter)) {
+            log.debug("REST request to get all Landscapes where game is null");
             return new ResponseEntity<>(StreamSupport
                 .stream(landscapeRepository.findAll().spliterator(), false)
-                .filter(landscape -> landscape.getTurn() == null)
+                .filter(landscape -> landscape.getGame() == null)
                 .collect(Collectors.toList()), HttpStatus.OK);
         }
         log.debug("REST request to get a page of Landscapes");
@@ -141,25 +133,6 @@ public class LandscapeResource {
         log.debug("REST request to delete Landscape : {}", id);
 
         landscapeRepository.deleteById(id);
-        landscapeSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
-
-    /**
-     * SEARCH  /_search/landscapes?query=:query : search for the landscape corresponding
-     * to the query.
-     *
-     * @param query the query of the landscape search
-     * @param pageable the pagination information
-     * @return the result of the search
-     */
-    @GetMapping("/_search/landscapes")
-    @Timed
-    public ResponseEntity<List<Landscape>> searchLandscapes(@RequestParam String query, Pageable pageable) {
-        log.debug("REST request to search for a page of Landscapes for query {}", query);
-        Page<Landscape> page = landscapeSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/landscapes");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
-    }
-
 }

@@ -17,6 +17,12 @@
             "otherEntityRelationshipName": "player"
         },
         {
+            "relationshipType": "one-to-many",
+            "relationshipName": "playerTurn",
+            "otherEntityName": "playerTurn",
+            "otherEntityRelationshipName": "player"
+        },
+        {
             "relationshipType": "many-to-one",
             "relationshipValidateRules": "required",
             "relationshipName": "game",
@@ -24,7 +30,7 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190110213047",
+    "changelogDate": "20190115210752",
     "entityTableName": "player",
     "dto": "no",
     "pagination": "pagination",
@@ -32,5 +38,8 @@
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*"
+    "applications": [
+        "Lgm"
+    ],
+    "skipClient": true
 }

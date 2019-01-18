@@ -1,11 +1,12 @@
 package me.bmordue.lgm.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -14,14 +15,13 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "landscape")
-@Document(indexName = "landscape")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Landscape implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -38,7 +38,7 @@ public class Landscape implements Serializable {
 
     @OneToOne(mappedBy = "landscape")
     @JsonIgnore
-    private Turn turn;
+    private Game game;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -88,17 +88,17 @@ public class Landscape implements Serializable {
         this.cells = cells;
     }
 
-    public Turn getTurn() {
-        return turn;
+    public Game getGame() {
+        return game;
     }
 
-    public Landscape turn(Turn turn) {
-        this.turn = turn;
+    public Landscape game(Game game) {
+        this.game = game;
         return this;
     }
 
-    public void setTurn(Turn turn) {
-        this.turn = turn;
+    public void setGame(Game game) {
+        this.game = game;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

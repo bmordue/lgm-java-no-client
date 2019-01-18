@@ -1,0 +1,26 @@
+{
+    "name": "TurnOutcome",
+    "fields": [],
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipValidateRules": "required",
+            "relationshipName": "turn",
+            "otherEntityName": "gameTurn",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "outcome"
+        }
+    ],
+    "changelogDate": "20190115210750",
+    "entityTableName": "turn_outcome",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": [
+        "Lgm"
+    ],
+    "skipClient": true
+}

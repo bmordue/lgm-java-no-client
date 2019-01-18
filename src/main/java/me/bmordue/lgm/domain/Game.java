@@ -1,10 +1,11 @@
 package me.bmordue.lgm.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,20 +16,24 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "game")
-@Document(indexName = "game")
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Game implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne    @JoinColumn(unique = true)
+    private Landscape landscape;
+
     @OneToMany(mappedBy = "game")
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Player> players = new HashSet<>();
     @OneToMany(mappedBy = "game")
-    private Set<Turn> turns = new HashSet<>();
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<GameTurn> gameTurns = new HashSet<>();
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -36,6 +41,19 @@ public class Game implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Landscape getLandscape() {
+        return landscape;
+    }
+
+    public Game landscape(Landscape landscape) {
+        this.landscape = landscape;
+        return this;
+    }
+
+    public void setLandscape(Landscape landscape) {
+        this.landscape = landscape;
     }
 
     public Set<Player> getPlayers() {
@@ -63,29 +81,29 @@ public class Game implements Serializable {
         this.players = players;
     }
 
-    public Set<Turn> getTurns() {
-        return turns;
+    public Set<GameTurn> getGameTurns() {
+        return gameTurns;
     }
 
-    public Game turns(Set<Turn> turns) {
-        this.turns = turns;
+    public Game gameTurns(Set<GameTurn> gameTurns) {
+        this.gameTurns = gameTurns;
         return this;
     }
 
-    public Game addTurn(Turn turn) {
-        this.turns.add(turn);
-        turn.setGame(this);
+    public Game addGameTurn(GameTurn gameTurn) {
+        this.gameTurns.add(gameTurn);
+        gameTurn.setGame(this);
         return this;
     }
 
-    public Game removeTurn(Turn turn) {
-        this.turns.remove(turn);
-        turn.setGame(null);
+    public Game removeGameTurn(GameTurn gameTurn) {
+        this.gameTurns.remove(gameTurn);
+        gameTurn.setGame(null);
         return this;
     }
 
-    public void setTurns(Set<Turn> turns) {
-        this.turns = turns;
+    public void setGameTurns(Set<GameTurn> gameTurns) {
+        this.gameTurns = gameTurns;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

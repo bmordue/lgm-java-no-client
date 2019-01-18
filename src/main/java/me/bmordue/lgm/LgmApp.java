@@ -33,7 +33,7 @@ public class LgmApp {
     }
 
     /**
-     * Initializes lgm.
+     * Initializes Lgm.
      * <p>
      * Spring profiles can be configured with a program argument --spring.profiles.active=your-active-profile
      * <p>

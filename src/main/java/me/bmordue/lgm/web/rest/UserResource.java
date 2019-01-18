@@ -3,7 +3,6 @@ package me.bmordue.lgm.web.rest;
 import me.bmordue.lgm.config.Constants;
 import me.bmordue.lgm.domain.User;
 import me.bmordue.lgm.repository.UserRepository;
-import me.bmordue.lgm.repository.search.UserSearchRepository;
 import me.bmordue.lgm.security.AuthoritiesConstants;
 import me.bmordue.lgm.service.MailService;
 import me.bmordue.lgm.service.UserService;
@@ -30,10 +29,6 @@ import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing users.
@@ -71,14 +66,11 @@ public class UserResource {
 
     private final MailService mailService;
 
-    private final UserSearchRepository userSearchRepository;
-
-    public UserResource(UserService userService, UserRepository userRepository, MailService mailService, UserSearchRepository userSearchRepository) {
+    public UserResource(UserService userService, UserRepository userRepository, MailService mailService) {
 
         this.userService = userService;
         this.userRepository = userRepository;
         this.mailService = mailService;
-        this.userSearchRepository = userSearchRepository;
     }
 
     /**
@@ -110,7 +102,7 @@ public class UserResource {
             User newUser = userService.createUser(userDTO);
             mailService.sendCreationEmail(newUser);
             return ResponseEntity.created(new URI("/api/users/" + newUser.getLogin()))
-                .headers(HeaderUtil.createAlert( "A user is created with identifier " + newUser.getLogin(), newUser.getLogin()))
+                .headers(HeaderUtil.createAlert( "userManagement.created", newUser.getLogin()))
                 .body(newUser);
         }
     }
@@ -139,7 +131,7 @@ public class UserResource {
         Optional<UserDTO> updatedUser = userService.updateUser(userDTO);
 
         return ResponseUtil.wrapOrNotFound(updatedUser,
-            HeaderUtil.createAlert("A user is updated with identifier " + userDTO.getLogin(), userDTO.getLogin()));
+            HeaderUtil.createAlert("userManagement.updated", userDTO.getLogin()));
     }
 
     /**
@@ -193,21 +185,6 @@ public class UserResource {
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
-        return ResponseEntity.ok().headers(HeaderUtil.createAlert( "A user is deleted with identifier " + login, login)).build();
-    }
-
-    /**
-     * SEARCH /_search/users/:query : search for the User corresponding
-     * to the query.
-     *
-     * @param query the query to search
-     * @return the result of the search
-     */
-    @GetMapping("/_search/users/{query}")
-    @Timed
-    public List<User> search(@PathVariable String query) {
-        return StreamSupport
-            .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return ResponseEntity.ok().headers(HeaderUtil.createAlert( "userManagement.deleted", login)).build();
     }
 }

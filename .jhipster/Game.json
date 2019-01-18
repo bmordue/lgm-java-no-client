@@ -3,6 +3,14 @@
     "fields": [],
     "relationships": [
         {
+            "relationshipType": "one-to-one",
+            "relationshipName": "landscape",
+            "otherEntityName": "landscape",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "game"
+        },
+        {
             "relationshipType": "one-to-many",
             "relationshipName": "player",
             "otherEntityName": "player",
@@ -10,12 +18,12 @@
         },
         {
             "relationshipType": "one-to-many",
-            "relationshipName": "turn",
-            "otherEntityName": "turn",
+            "relationshipName": "gameTurn",
+            "otherEntityName": "gameTurn",
             "otherEntityRelationshipName": "game"
         }
     ],
-    "changelogDate": "20190110213045",
+    "changelogDate": "20190115210749",
     "entityTableName": "game",
     "dto": "no",
     "pagination": "pagination",
@@ -23,5 +31,8 @@
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
     "clientRootFolder": "",
-    "applications": "*"
+    "applications": [
+        "Lgm"
+    ],
+    "skipClient": true
 }
