@@ -28,6 +28,7 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
+@PreAuthorize("hasRole('ROLE_USER')")
 public class GameResource {
 
     private final Logger log = LoggerFactory.getLogger(GameResource.class);
