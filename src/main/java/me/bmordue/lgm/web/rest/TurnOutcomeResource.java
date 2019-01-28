@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,6 +31,7 @@ import java.util.stream.StreamSupport;
  */
 @RestController
 @RequestMapping("/api")
+@PreAuthorize("isAuthorized()")
 public class TurnOutcomeResource {
 
     private final Logger log = LoggerFactory.getLogger(TurnOutcomeResource.class);
@@ -51,6 +53,7 @@ public class TurnOutcomeResource {
      */
     @PostMapping("/turn-outcomes")
     @Timed
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<TurnOutcome> createTurnOutcome(@Valid @RequestBody TurnOutcome turnOutcome) throws URISyntaxException {
         log.debug("REST request to save TurnOutcome : {}", turnOutcome);
         if (turnOutcome.getId() != null) {
@@ -73,6 +76,7 @@ public class TurnOutcomeResource {
      */
     @PutMapping("/turn-outcomes")
     @Timed
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<TurnOutcome> updateTurnOutcome(@Valid @RequestBody TurnOutcome turnOutcome) throws URISyntaxException {
         log.debug("REST request to update TurnOutcome : {}", turnOutcome);
         if (turnOutcome.getId() == null) {
@@ -129,6 +133,7 @@ public class TurnOutcomeResource {
      */
     @DeleteMapping("/turn-outcomes/{id}")
     @Timed
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteTurnOutcome(@PathVariable Long id) {
         log.debug("REST request to delete TurnOutcome : {}", id);
 
