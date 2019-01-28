@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -30,6 +31,7 @@ import java.util.stream.StreamSupport;
  */
 @RestController
 @RequestMapping("/api")
+@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class LandscapeResource {
 
     private final Logger log = LoggerFactory.getLogger(LandscapeResource.class);
