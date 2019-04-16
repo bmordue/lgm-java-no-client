@@ -13,13 +13,13 @@ node {
 
   stage ('Build') {
     docker.image("${image_name}:${tag}").inside("${volumes}") {
-      sh "${MVN} clean package -DskipTests"
+      sh "${MVN} clean package -DskipTests > mvn_package.log 2>&1"
     }
   }
   
   stage ('Run tests') {
     docker.image("${image_name}:${tag}").inside("${volumes}") {
-      sh "${MVN} test"
+      sh "${MVN} test > mvn_test.log 2>&1"
     }
   }
 
@@ -43,6 +43,6 @@ node {
   }
 
   stage ('Archive artifacts') {
-//    archiveArtifacts artifacts: 'coverage/**/*,*xml', onlyIfSuccessful: true, allowEmptyArchive: true
+    archiveArtifacts artifacts: '*log', onlyIfSuccessful: false, allowEmptyArchive: true
   }
 }
