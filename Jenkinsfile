@@ -47,6 +47,8 @@ try {
 } catch (e) {
   stage ('Archive artifacts') {
     archiveArtifacts artifacts: '*log', onlyIfSuccessful: false, allowEmptyArchive: true
+
+    throw e
   }
 
 }
