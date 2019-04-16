@@ -11,6 +11,8 @@ node {
   def DOCKER_BIN = "${DOCKER_HOME}/bin/docker"
   def MVN = "mvn -e -B"
 
+// TODO fix formatting
+try {
   stage ('Build') {
     docker.image("${image_name}:${tag}").inside("${volumes}") {
       sh "${MVN} clean package -DskipTests > mvn_package.log 2>&1"
@@ -42,7 +44,12 @@ node {
     }
   }
 
+} catch (e) {
   stage ('Archive artifacts') {
     archiveArtifacts artifacts: '*log', onlyIfSuccessful: false, allowEmptyArchive: true
   }
+
+}
+
+
 }
