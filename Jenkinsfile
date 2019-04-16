@@ -9,16 +9,17 @@ node {
 
   def DOCKER_HOME = tool 'docker'
   def DOCKER_BIN = "${DOCKER_HOME}/bin/docker"
+  def MVN = "mvn -e -B"
 
   stage ('Build') {
     docker.image("${image_name}:${tag}").inside("${volumes}") {
-      sh "mvn clean package -DskipTests"
+      sh "${MVN} clean package -DskipTests"
     }
   }
   
   stage ('Run tests') {
     docker.image("${image_name}:${tag}").inside("${volumes}") {
-      sh "mvn test"
+      sh "${MVN} test"
     }
   }
 
