@@ -36,7 +36,7 @@ try {
                     + "-Dsonar.organization=bmordue-github"
 
     if (env.BRANCH_NAME != 'master') {
-        sonarParams += " -Dsonar.pullrequest.branch=${env.BRANCH_NAME}" +
+        sonarParams = sonarParams + " -Dsonar.pullrequest.branch=${env.BRANCH_NAME}" +
             " -Dsonar.pullrequest.key=${env.CHANGE_ID}" +
             " -Dsonar.pullrequest.base=${env.CHANGE_TARGET}"
     }
