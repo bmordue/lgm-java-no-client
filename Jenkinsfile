@@ -31,18 +31,15 @@ try {
 
   stage ('Analysis') {
     def sonarProperties = "-v ${WORKSPACE}/conf:/root/sonar-scanner/conf" // doesn't appear to be working...
-    def sonarParams = "-Dsonar.host.url=https://sonarcloud.io -Dsonar."
-                    + "-Dsonar.projectKey=bmordue_lgm-java-no-client"
-                    + "-Dsonar.organization=bmordue-github"
+    def sonarParams = "-Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=bmordue_lgm-java-no-client -Dsonar.organization=bmordue-github"
+    def sonarExtraParams = ""
 
     if (env.BRANCH_NAME != 'master') {
-        sonarParams = sonarParams + " -Dsonar.pullrequest.branch=${env.BRANCH_NAME}" +
-            " -Dsonar.pullrequest.key=${env.CHANGE_ID}" +
-            " -Dsonar.pullrequest.base=${env.CHANGE_TARGET}"
+        sonarExtraParams = "-Dsonar.pullrequest.branch=${env.BRANCH_NAME} -Dsonar.pullrequest.key=${env.CHANGE_ID} -Dsonar.pullrequest.base=${env.CHANGE_TARGET}"
     }
     withCredentials([string(credentialsId: 'SONAR_LOGIN', variable: 'SONAR_LOGIN')]) {
       docker.image("newtmitch/sonar-scanner:3.2.0-alpine").inside("${volumes} ${sonarProperties}") {
-        sh "sonar-scanner -Dsonar.login=${SONAR_LOGIN} ${sonarParams}"
+        sh "sonar-scanner -Dsonar.login=${SONAR_LOGIN} ${sonarParams} ${sonarExtraParams}"
       }
     }
   }
