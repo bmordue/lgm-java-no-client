@@ -12,18 +12,20 @@ import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Optional;
 
+@Service
 public class GamesApiDelegateImpl implements GamesApiDelegate {
 
     @Autowired
-    GameRepository gameRepository;
+    GamesService gamesService;
 
     @Override
     public ResponseEntity<GameCreatedResponse> createGame() {
-        return null;
+        return new ResponseEntity<GameCreatedResponse>(gamesService.createGame());
     }
 
     @Override
     public ResponseEntity<Void> joinGame(Integer id) {
-        return null;
+        gamesService.joinGame(id); // This needs the authenticated user's ID
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }
