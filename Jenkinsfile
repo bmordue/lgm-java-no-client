@@ -30,10 +30,13 @@ try {
   }
 
   stage ('Analysis') {
-    def sonarProperties = "-v ${WORKSPACE}/conf:/root/sonar-scanner/conf"
-    def sonarParams = ""
+    def sonarProperties = "-v ${WORKSPACE}/conf:/root/sonar-scanner/conf" // doesn't appear to be working...
+    def sonarParams = "-Dsonar.host.url=https://sonarcloud.io -Dsonar."
+                    + "-Dsonar.projectKey=bmordue_lgm-java-no-client"
+                    + "-Dsonar.organization=bmordue-github"
+
     if (env.BRANCH_NAME != 'master') {
-        sonarParams = " -Dsonar.pullrequest.branch=${env.BRANCH_NAME}" +
+        sonarParams += " -Dsonar.pullrequest.branch=${env.BRANCH_NAME}" +
             " -Dsonar.pullrequest.key=${env.CHANGE_ID}" +
             " -Dsonar.pullrequest.base=${env.CHANGE_TARGET}"
     }
