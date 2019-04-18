@@ -13,7 +13,7 @@ components:
       GameCreatedResponse:
           properties:
               id:
-                  type: integer
+                  type: long
               join_url:
                   type: string
           required:
@@ -62,7 +62,7 @@ paths:
           name: id
           required: true
           schema:
-            type: integer
+            type: long
       responses:
         '204':
           description: join request accepted
@@ -87,7 +87,7 @@ paths:
           name: id
           required: true
           schema:
-            type: integer
+            type: long
       responses:
         '200':
           description: turn results
@@ -103,7 +103,7 @@ paths:
           name: id
           required: true
           schema:
-            type: integer
+            type: long
       requestBody:
         required: true
         content:

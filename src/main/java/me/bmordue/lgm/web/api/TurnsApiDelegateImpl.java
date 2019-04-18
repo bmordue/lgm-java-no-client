@@ -3,10 +3,9 @@ package me.bmordue.lgm.web.api;
 import me.bmordue.lgm.web.api.model.TurnOrders;
 import me.bmordue.lgm.web.api.model.TurnResultsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Optional;
+import org.springframework.stereotype.Service;
 
 @Service
 public class TurnsApiDelegateImpl implements TurnsApiDelegate {
@@ -15,13 +14,13 @@ public class TurnsApiDelegateImpl implements TurnsApiDelegate {
     TurnsService turnsService;
 
     @Override
-    public ResponseEntity<Void> postOrders(Integer id, TurnOrders turnOrders) {
+    public ResponseEntity<Void> postOrders(Long id, TurnOrders turnOrders) {
         turnsService.postOrders(id, turnOrders);
-        return new ResponseEntity(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @Override
-    public ResponseEntity<TurnResultsResponse> turnResults(Integer id) {
-        return new ResponseEntity<TurnResultsResponse>(turnsService.getTurnResults(id));
+    public ResponseEntity<TurnResultsResponse> turnResults(Long id) {
+        return new ResponseEntity<>(turnsService.getTurnResults(id), HttpStatus.OK);
     }
 }
