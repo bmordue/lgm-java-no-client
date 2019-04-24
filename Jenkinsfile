@@ -1,6 +1,6 @@
 node {
   stage('Checkout') {
-    deleteDir
+    deleteDir()
     checkout scm
   }
 
