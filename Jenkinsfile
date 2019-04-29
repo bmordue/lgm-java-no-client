@@ -1,5 +1,6 @@
 node {
   stage('Checkout') {
+    deleteDir()
     checkout scm
   }
 
@@ -26,7 +27,9 @@ try {
   }
 
   stage ('Coverage') {
-    echo 'NO COVERAGE YET'
+    docker.image("${image_name}:${tag}").inside("${volumes}") {
+      sh "${MVN} clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false > mvn_coverage.log 2>&1"
+    }
   }
 
   stage ('Analysis') {
@@ -39,7 +42,7 @@ try {
     }
     withCredentials([string(credentialsId: 'SONAR_LOGIN', variable: 'SONAR_LOGIN')]) {
       docker.image("newtmitch/sonar-scanner:3.2.0-alpine").inside("${volumes} ${sonarProperties}") {
-        sh "sonar-scanner -Dsonar.login=${SONAR_LOGIN} ${sonarParams} ${sonarExtraParams}"
+        sh "sonar-scanner -Dsonar.login=${SONAR_LOGIN} ${sonarParams} ${sonarExtraParams} > sonar_scanner.log 2>&1"
       }
     }
   }
