@@ -31,7 +31,7 @@ try {
 
   stage ('Analysis') {
     def sonarProperties = "-v ${WORKSPACE}/conf:/root/sonar-scanner/conf" // doesn't appear to be working...
-    def sonarParams = "-Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=bmordue_lgm-java-no-client -Dsonar.organization=bmordue-github -Dsonar.java.binaries=./target/"
+    def sonarParams = "-Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=bmordue_lgm-java-no-client -Dsonar.organization=bmordue-github -Dsonar.java.binaries=./target/ -Dsonar.coverage.jacoco.xmlReportPaths=target/test-results/coverage/jacoco/jacoco.xml"
     def sonarExtraParams = ""
 
     if (env.BRANCH_NAME != 'master') {
