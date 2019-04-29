@@ -27,6 +27,8 @@ try {
   }
 
   stage ('Coverage') {
+    deleteDir()
+    checkout scm
     docker.image("${image_name}:${tag}").inside("${volumes}") {
       sh "${MVN} clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false > mvn_coverage.log 2>&1"
     }
