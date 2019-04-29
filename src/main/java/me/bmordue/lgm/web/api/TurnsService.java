@@ -24,16 +24,16 @@ public class TurnsService {
 
     @Autowired
     TurnOutcomeMapper turnOutcomeMapper;
-    
+
     @Autowired
     PlayerRepository playerRepository;
-    
+
     @Autowired
     PlayerTurnRepository playerTurnRepository;
-    
+
     @Autowired
     PlayerTurnMapper playerTurnMapper;
-    
+
     @Autowired
     RulesProcessor rulesProcessor;
 
