@@ -44,6 +44,6 @@ class GamesService {
         if (game.isPresent()) {
             game.get().addPlayer(player);
             gameRepository.save(game.get());
-        } // TODO: else log or throw!
+        }
     }
 }
