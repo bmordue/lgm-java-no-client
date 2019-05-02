@@ -6,7 +6,7 @@ import me.bmordue.lgm.domain.RulesProcessor;
 import me.bmordue.lgm.repository.PlayerRepository;
 import me.bmordue.lgm.repository.PlayerTurnRepository;
 import me.bmordue.lgm.repository.TurnOutcomeRepository;
-import me.bmordue.lgm.security.SecurityUtils;
+import me.bmordue.lgm.security.IAuthenticationFacade;
 import me.bmordue.lgm.service.mapper.PlayerTurnMapper;
 import me.bmordue.lgm.service.mapper.TurnOutcomeMapper;
 import me.bmordue.lgm.web.api.model.TurnOrders;
@@ -20,25 +20,28 @@ import org.springframework.stereotype.Service;
 public class TurnsService {
 
     @Autowired
-    TurnOutcomeRepository turnOutcomeRepository;
+    private IAuthenticationFacade authenticationFacade;
 
     @Autowired
-    TurnOutcomeMapper turnOutcomeMapper;
+    private TurnOutcomeRepository turnOutcomeRepository;
 
     @Autowired
-    PlayerRepository playerRepository;
+    private TurnOutcomeMapper turnOutcomeMapper;
 
     @Autowired
-    PlayerTurnRepository playerTurnRepository;
+    private PlayerRepository playerRepository;
 
     @Autowired
-    PlayerTurnMapper playerTurnMapper;
+    private PlayerTurnRepository playerTurnRepository;
 
     @Autowired
-    RulesProcessor rulesProcessor;
+    private PlayerTurnMapper playerTurnMapper;
+
+    @Autowired
+    private RulesProcessor rulesProcessor;
 
     void postOrders(Long id, TurnOrders turnOrders) throws AuthenticationException {
-        String userLogin = SecurityUtils.getCurrentUserLogin()
+        String userLogin = authenticationFacade.getCurrentUserLogin()
             .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("bad auth"));
         Player player = playerRepository.findByName(userLogin)
             .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("bad auth"));
