@@ -27,6 +27,8 @@ try {
   }
 
   stage ('Coverage') {
+    deleteDir()
+    checkout scm
     docker.image("${image_name}:${tag}").inside("${volumes}") {
       sh "${MVN} clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false > mvn_coverage.log 2>&1"
     }
@@ -34,7 +36,9 @@ try {
 
   stage ('Analysis') {
     def sonarProperties = "-v ${WORKSPACE}/conf:/root/sonar-scanner/conf" // doesn't appear to be working...
-    def sonarParams = "-Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=bmordue_lgm-java-no-client -Dsonar.organization=bmordue-github -Dsonar.java.binaries=./target/"
+    def sonarParams = "-Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=bmordue_lgm-java-no-client" + 
+        " -Dsonar.organization=bmordue-github -Dsonar.java.binaries=./target/ -Dsonar.coverage.jacoco.xmlReportPaths=target/test-results/coverage/jacoco/jacoco.xml" +
+        " -Dsonar.tests=src/test -Dsonar.sources=src/main"
     def sonarExtraParams = ""
 
     if (env.BRANCH_NAME != 'master') {

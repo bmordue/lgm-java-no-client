@@ -147,3 +147,5 @@ Desktop.ini
 .env*
 sonar.sh
 
+
+.m2/*

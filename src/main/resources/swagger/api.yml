@@ -4,4 +4,118 @@ openapi: "3.0.1"
 info:
   title: "Lgm"
   version: 0.0.1
-paths: {}
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+      GameCreatedResponse:
+          properties:
+              id:
+                  type: long
+              join_url:
+                  type: string
+          required:
+              - id
+              - join_url
+      ErrorMessageResponse:
+          properties:
+              message:
+                  type: string
+          required:
+              - message
+      TurnOrders:
+          properties:
+              orders:
+                  type: array
+                  items:
+                      type: object
+                      properties:
+                          placeholder:
+                              type: string
+      TurnResultsResponse:
+          properties:
+              placeholder:
+                  type: string
+
+security:
+  - bearerAuth: []
+paths:
+  /games:
+    post:
+      operationId: createGame
+      summary: create a new game
+      responses:
+        '200':
+          description: metadata about newly created game
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameCreatedResponse'
+  /games/{id}:
+    put:
+      operationId: joinGame
+      summary: join a game
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: long
+      responses:
+        '204':
+          description: join request accepted
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageResponse'
+        '403':
+          description: join request denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageResponse'
+  /turns/{id}:
+    get:
+      operationId: turnResults
+      summary: get turn results
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: long
+      responses:
+        '200':
+          description: turn results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TurnResultsResponse'
+    post:
+      operationId: postOrders
+      summary: post turn orders
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: long
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TurnOrders'
+      responses:
+        '202':
+          description: accepted
+        '400':
+          description: bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessageResponse'
