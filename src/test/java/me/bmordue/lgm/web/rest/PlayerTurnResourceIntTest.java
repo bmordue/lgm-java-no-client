@@ -104,7 +104,6 @@ public class PlayerTurnResourceIntTest {
     }
 
     @Test
-    @Ignore
     @Transactional
     public void createPlayerTurn() throws Exception {
         int databaseSizeBeforeCreate = playerTurnRepository.findAll().size();
@@ -175,7 +174,6 @@ public class PlayerTurnResourceIntTest {
     }
 
     @Test
-    @Ignore
     @Transactional
     public void updatePlayerTurn() throws Exception {
         // Initialize the database
