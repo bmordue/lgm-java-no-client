@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -43,9 +44,27 @@ public class GamesApiDelegateImplTest {
     }
 
     @Test
+    @WithAnonymousUser
+    public void createGameAsAnonymous() throws Exception {
+        GameCreatedResponse mockResponse = mock(GameCreatedResponse.class);
+        when(gamesService.createGame()).thenReturn(mockResponse);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/games"))
+//            .andDo(print())
+            .andExpect(status().isUnauthorised());
+    }
+
+    @Test
     public void joinGame() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put("/games/1"))
 //            .andDo(print())
             .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void joinGameAsAnonymous() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.put("/games/1"))
+//            .andDo(print())
+            .andExpect(status().isUnauthorised());
     }
 }
