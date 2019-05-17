@@ -72,4 +72,23 @@ public class GamesServiceTest {
 
         verify(gameRepository).findById(gameId);
     }
+
+    @Test
+    public void joinGameNoAuth() {
+        String testUserLogin = "daffy";
+        Player mockPlayer = mock(Player.class);
+
+        GameCreatedResponse mockGameCreated = mock(GameCreatedResponse.class);
+        long gameId = mockGameCreated.getId();
+        Game mockGame = mock(Game.class);
+
+        doReturn(Optional.of(testUserLogin)).when(authenticationFacade).getCurrentUserLogin();
+        doReturn(mockPlayer).when(playerMapper).userLoginToPlayer(testUserLogin);
+        doReturn(Optional.of(mockGame)).when(gameRepository).findById(gameId);
+
+        gamesService.joinGame(gameId);
+
+        verify(gameRepository).findById(gameId);
+    }
+
 }
