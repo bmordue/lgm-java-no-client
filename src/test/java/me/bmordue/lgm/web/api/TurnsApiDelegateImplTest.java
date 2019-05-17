@@ -3,6 +3,7 @@ package me.bmordue.lgm.web.api;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.bmordue.lgm.web.api.model.TurnOrders;
 import me.bmordue.lgm.web.api.model.TurnResultsResponse;
+import me.bmordue.lgm.web.api.exceptions.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,14 +55,24 @@ public class TurnsApiDelegateImplTest {
     }
 
     @Test
-    @WithAnonymousUser
-    public void postOrdersAsAnonymous() throws Exception {
+    public void postOrdersUserLoginNotFound() throws Exception {
         String jsonContent = objectMapper.writeValueAsString(new TurnOrders());
+        doThrow(UserLoginNotFoundException.class).when(turnsService).postOrders(any(), any());
 
         mockMvc.perform(MockMvcRequestBuilders
             .post("/turns/1").contentType("application/json").content(jsonContent))
-//            .andDo(print())
-            .andExpect(status().isUnauthorized());
+            .andExpect(status().isInternalServerError());
     }
+            
+    @Test
+    public void postOrdersPlayerNotFound() throws Exception {
+        String jsonContent = objectMapper.writeValueAsString(new TurnOrders());
+        doThrow(PlayerNotFoundException.class).when(turnsService).postOrders(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/turns/1").contentType("application/json").content(jsonContent))
+            .andExpect(status().isInternalServerError());
+    }
+
 
 }
