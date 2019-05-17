@@ -1,6 +1,9 @@
 package me.bmordue.lgm.web.api;
 
 import me.bmordue.lgm.web.api.model.GameCreatedResponse;
+import me.bmordue.lgm.web.api.exceptions.GameNotFoundException;
+import me.bmordue.lgm.web.api.exceptions.LgmServiceException;
+import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
