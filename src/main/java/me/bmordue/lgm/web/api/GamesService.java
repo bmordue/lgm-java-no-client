@@ -25,7 +25,7 @@ class GamesService {
 
     @Autowired
     private GameMapper gameMapper;
-    
+
     @Autowired
     private PlayerRepository playerRepository;
 

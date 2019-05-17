@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -50,6 +51,17 @@ public class TurnsApiDelegateImplTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/turns/1"))
 //            .andDo(print())
             .andExpect(status().isOk());
-
     }
+
+    @Test
+    @WithAnonymousUser
+    public void postOrdersAsAnonymous() throws Exception {
+        String jsonContent = objectMapper.writeValueAsString(new TurnOrders());
+
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/turns/1").contentType("application/json").content(jsonContent))
+//            .andDo(print())
+            .andExpect(status().isUnauthorized());
+    }
+
 }

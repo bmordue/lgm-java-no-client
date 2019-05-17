@@ -51,7 +51,7 @@ public class GamesApiDelegateImplTest {
 
         mockMvc.perform(MockMvcRequestBuilders.post("/games"))
 //            .andDo(print())
-            .andExpect(status().isUnauthorised());
+            .andExpect(status().isUnauthorized());
     }
 
     @Test
@@ -65,6 +65,6 @@ public class GamesApiDelegateImplTest {
     public void joinGameAsAnonymous() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put("/games/1"))
 //            .andDo(print())
-            .andExpect(status().isUnauthorised());
+            .andExpect(status().isUnauthorized());
     }
 }
