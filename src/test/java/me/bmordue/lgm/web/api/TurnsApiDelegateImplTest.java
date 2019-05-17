@@ -60,7 +60,7 @@ public class TurnsApiDelegateImplTest {
 
         mockMvc.perform(MockMvcRequestBuilders
             .post("/turns/1").contentType("application/json").content(jsonContent))
-            .andExpect(status().isInternalServerError());
+            .andExpect(status().isUnauthorized());
     }
             
     @Test
