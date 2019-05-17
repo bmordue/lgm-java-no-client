@@ -19,6 +19,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -42,18 +43,7 @@ public class GamesApiDelegateImplTest {
 //            .andDo(print())
             .andExpect(status().isOk());
     }
-
-    @Test
-    @WithAnonymousUser
-    public void createGameAsAnonymous() throws Exception {
-        GameCreatedResponse mockResponse = mock(GameCreatedResponse.class);
-        when(gamesService.createGame()).thenReturn(mockResponse);
-
-        mockMvc.perform(MockMvcRequestBuilders.post("/games"))
-//            .andDo(print())
-            .andExpect(status().isUnauthorized());
-    }
-
+    
     @Test
     public void joinGame() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.put("/games/1"))
@@ -62,9 +52,16 @@ public class GamesApiDelegateImplTest {
     }
 
     @Test
-    public void joinGameAsAnonymous() throws Exception {
+    public void joinGameUserLoginNotFound() throws Exception {
+        doThrow(UserLoginNotFoundException.java).when(gamesService).joinGame(anyLong());
         mockMvc.perform(MockMvcRequestBuilders.put("/games/1"))
-//            .andDo(print())
             .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    public void joinGameNotFound() throws Exception {
+        doThrow(GameNotFoundException.java).when(gamesService).joinGame(anyLong());
+        mockMvc.perform(MockMvcRequestBuilders.put("/games/1"))
+            .andExpect(status().isNotFound());
     }
 }
