@@ -52,8 +52,8 @@ node {
 
     } catch (e) {
         stage ('Archive artifacts') {
-            archiveArtifacts artifacts: '*log', onlyIfSuccessful: false, allowEmptyArchive: true
-            junit testResults: './target/surefire-reports/*xml', allowEmptyResults: true
+            archiveArtifacts artifacts: '*log,**/surefire-reports/*xml', onlyIfSuccessful: false, allowEmptyArchive: true
+            junit testResults: 'target/surefire-reports/*xml', allowEmptyResults: true
             throw e
         }
     }
