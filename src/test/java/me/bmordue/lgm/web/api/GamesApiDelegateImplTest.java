@@ -53,14 +53,14 @@ public class GamesApiDelegateImplTest {
 
     @Test
     public void joinGameUserLoginNotFound() throws Exception {
-        doThrow(UserLoginNotFoundException.java).when(gamesService).joinGame(anyLong());
+        doThrow(UserLoginNotFoundException.class).when(gamesService).joinGame(anyLong());
         mockMvc.perform(MockMvcRequestBuilders.put("/games/1"))
             .andExpect(status().isUnauthorized());
     }
 
     @Test
     public void joinGameNotFound() throws Exception {
-        doThrow(GameNotFoundException.java).when(gamesService).joinGame(anyLong());
+        doThrow(GameNotFoundException.class).when(gamesService).joinGame(anyLong());
         mockMvc.perform(MockMvcRequestBuilders.put("/games/1"))
             .andExpect(status().isNotFound());
     }
