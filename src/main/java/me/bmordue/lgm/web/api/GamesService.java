@@ -8,11 +8,12 @@ import me.bmordue.lgm.security.IAuthenticationFacade;
 import me.bmordue.lgm.service.mapper.GameMapper;
 import me.bmordue.lgm.service.mapper.PlayerMapper;
 import me.bmordue.lgm.web.api.exceptions.GameNotFoundException;
-import me.bmordue.lgm.web.api.exceptions.LgmServiceException;
 import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
 import me.bmordue.lgm.web.api.model.GameCreatedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 class GamesService {
@@ -32,20 +33,24 @@ class GamesService {
     @Autowired
     private PlayerMapper playerMapper;
 
+    private Player findOrCreatePlayerForCurrentUserLogin() {
+        String userLogin = authenticationFacade.getCurrentUserLogin()
+            .orElseThrow(UserLoginNotFoundException::new);
+        Player loginPlayer = playerMapper.userLoginToPlayer(userLogin);
+        Optional<Player> existingPlayer = playerRepository.findByName(loginPlayer.getName());
+
+        return existingPlayer.orElse(playerRepository.save(loginPlayer));
+    }
+
     GameCreatedResponse createGame() {
         Game game = new Game();
         return gameMapper.gameToGameCreatedResponse(gameRepository.save(game));
     }
 
-    void joinGame(Long id) throws LgmServiceException {
-        Game game = gameRepository.findById(id).orElseThrow(GameNotFoundException::new);
-
-        String userLogin = authenticationFacade.getCurrentUserLogin()
-            .orElseThrow(UserLoginNotFoundException::new);
-        Player player = playerMapper.userLoginToPlayer(userLogin);
-        playerRepository.save(player);
-
-        game.addPlayer(player);
+    void joinGame(Long id) {
+        Game game = gameRepository.findById(id)
+            .orElseThrow(GameNotFoundException::new);
+        game.addPlayer(findOrCreatePlayerForCurrentUserLogin());
         gameRepository.save(game);
     }
 }

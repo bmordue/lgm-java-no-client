@@ -7,6 +7,9 @@ import me.bmordue.lgm.repository.PlayerRepository;
 import me.bmordue.lgm.security.IAuthenticationFacade;
 import me.bmordue.lgm.service.mapper.GameMapper;
 import me.bmordue.lgm.service.mapper.PlayerMapper;
+import me.bmordue.lgm.web.api.exceptions.GameNotFoundException;
+import me.bmordue.lgm.web.api.exceptions.PlayerNotFoundException;
+import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
 import me.bmordue.lgm.web.api.model.GameCreatedResponse;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,6 +69,7 @@ public class GamesServiceTest {
 
         doReturn(Optional.of(testUserLogin)).when(authenticationFacade).getCurrentUserLogin();
         doReturn(mockPlayer).when(playerMapper).userLoginToPlayer(testUserLogin);
+        doReturn(mockPlayer).when(playerRepository).findByName(testUserLogin);
         doReturn(Optional.of(mockGame)).when(gameRepository).findById(gameId);
 
         gamesService.joinGame(gameId);
@@ -74,7 +78,7 @@ public class GamesServiceTest {
     }
 
     @Test
-    public void joinGameNoAuth() {
+    public void joinGamePlayerNotInRepository() {
         String testUserLogin = "daffy";
         Player mockPlayer = mock(Player.class);
 
@@ -88,7 +92,30 @@ public class GamesServiceTest {
 
         gamesService.joinGame(gameId);
 
+        verify(playerRepository).save(mockPlayer);
         verify(gameRepository).findById(gameId);
+        verify(gameRepository).save(mockGame);
     }
 
+    @Test(expected = UserLoginNotFoundException.class)
+    public void joinGameUserLoginNotFound() {
+        long gameId = 42L;
+        doReturn(Optional.empty()).when(authenticationFacade).getCurrentUserLogin();
+
+        gamesService.joinGame(gameId);
+    }
+
+    @Test(expected = GameNotFoundException.class)
+    public void joinGameNotFound() {
+        String testUserLogin = "daffy";
+        Player mockPlayer = mock(Player.class);
+
+        long gameId = 42L;
+
+        doReturn(Optional.of(testUserLogin)).when(authenticationFacade).getCurrentUserLogin();
+        doReturn(mockPlayer).when(playerMapper).userLoginToPlayer(testUserLogin);
+        doReturn(Optional.empty()).when(gameRepository).findById(gameId);
+
+        gamesService.joinGame(gameId);
+    }
 }

@@ -14,8 +14,6 @@ import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
 import me.bmordue.lgm.web.api.model.TurnOrders;
 import me.bmordue.lgm.web.api.model.TurnResultsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service
