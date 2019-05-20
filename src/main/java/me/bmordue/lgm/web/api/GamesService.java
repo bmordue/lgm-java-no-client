@@ -6,10 +6,11 @@ import me.bmordue.lgm.repository.GameRepository;
 import me.bmordue.lgm.repository.PlayerRepository;
 import me.bmordue.lgm.security.IAuthenticationFacade;
 import me.bmordue.lgm.service.mapper.GameMapper;
+import me.bmordue.lgm.service.mapper.PlayerMapper;
+import me.bmordue.lgm.web.api.exceptions.GameNotFoundException;
+import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
 import me.bmordue.lgm.web.api.model.GameCreatedResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -24,26 +25,32 @@ class GamesService {
     private GameRepository gameRepository;
 
     @Autowired
-    private GameMapper mapper;
-    
+    private GameMapper gameMapper;
+
     @Autowired
     private PlayerRepository playerRepository;
 
-    GameCreatedResponse createGame() {
-        Game game = new Game();
-        return mapper.gameToGameCreatedResponse(gameRepository.save(game));
+    @Autowired
+    private PlayerMapper playerMapper;
+
+    private Player findOrCreatePlayerForCurrentUserLogin() {
+        String userLogin = authenticationFacade.getCurrentUserLogin()
+            .orElseThrow(UserLoginNotFoundException::new);
+        Player loginPlayer = playerMapper.userLoginToPlayer(userLogin);
+        Optional<Player> existingPlayer = playerRepository.findByName(loginPlayer.getName());
+
+        return existingPlayer.orElse(playerRepository.save(loginPlayer));
     }
 
-    void joinGame(Long id) throws AuthenticationException {
-        String userLogin = authenticationFacade.getCurrentUserLogin()
-            .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("bad auth"));
-        Player player = playerRepository.findByName(userLogin)
-            .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("bad auth"));
+    GameCreatedResponse createGame() {
+        Game game = new Game();
+        return gameMapper.gameToGameCreatedResponse(gameRepository.save(game));
+    }
 
-        Optional<Game> game = gameRepository.findById(id);
-        if (game.isPresent()) {
-            game.get().addPlayer(player);
-            gameRepository.save(game.get());
-        }
+    void joinGame(Long id) {
+        Game game = gameRepository.findById(id)
+            .orElseThrow(GameNotFoundException::new);
+        game.addPlayer(findOrCreatePlayerForCurrentUserLogin());
+        gameRepository.save(game);
     }
 }

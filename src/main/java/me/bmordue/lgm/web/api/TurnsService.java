@@ -9,11 +9,11 @@ import me.bmordue.lgm.repository.TurnOutcomeRepository;
 import me.bmordue.lgm.security.IAuthenticationFacade;
 import me.bmordue.lgm.service.mapper.PlayerTurnMapper;
 import me.bmordue.lgm.service.mapper.TurnOutcomeMapper;
+import me.bmordue.lgm.web.api.exceptions.PlayerNotFoundException;
+import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
 import me.bmordue.lgm.web.api.model.TurnOrders;
 import me.bmordue.lgm.web.api.model.TurnResultsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,13 +40,14 @@ public class TurnsService {
     @Autowired
     private RulesProcessor rulesProcessor;
 
-    void postOrders(Long id, TurnOrders turnOrders) throws AuthenticationException {
+    void postOrders(Long id, TurnOrders turnOrders) {
         String userLogin = authenticationFacade.getCurrentUserLogin()
-            .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("bad auth"));
+            .orElseThrow(UserLoginNotFoundException::new);
         Player player = playerRepository.findByName(userLogin)
-            .orElseThrow(() -> new AuthenticationCredentialsNotFoundException("bad auth"));
+            .orElseThrow(PlayerNotFoundException::new);
         PlayerTurn playerTurn = playerTurnMapper.turnOrdersToPlayerTurn(id, player, turnOrders);
         playerTurnRepository.save(playerTurn);
+
         rulesProcessor.process(); // this should become asynchronous
     }
 

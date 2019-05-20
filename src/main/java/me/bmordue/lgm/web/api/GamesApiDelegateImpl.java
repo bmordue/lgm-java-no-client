@@ -19,7 +19,7 @@ public class GamesApiDelegateImpl implements GamesApiDelegate {
 
     @Override
     public ResponseEntity<Void> joinGame(Long id) {
-        gamesService.joinGame(id); // This needs the authenticated user's ID
+        gamesService.joinGame(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

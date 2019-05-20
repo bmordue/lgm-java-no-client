@@ -9,6 +9,8 @@ import me.bmordue.lgm.repository.TurnOutcomeRepository;
 import me.bmordue.lgm.security.IAuthenticationFacade;
 import me.bmordue.lgm.service.mapper.PlayerTurnMapper;
 import me.bmordue.lgm.service.mapper.TurnOutcomeMapper;
+import me.bmordue.lgm.web.api.exceptions.PlayerNotFoundException;
+import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
 import me.bmordue.lgm.web.api.model.TurnOrders;
 import me.bmordue.lgm.web.api.model.TurnResultsResponse;
 import org.junit.Before;
@@ -67,6 +69,26 @@ public class TurnsServiceTest {
         turnsService.postOrders(id, mockOrders);
 
         Mockito.verify(rulesProcessor).process();
+    }
+
+    @Test(expected = UserLoginNotFoundException.class)
+    public void postOrdersUserLoginNotFound() {
+        long id = 1L;
+        TurnOrders mockOrders = mock(TurnOrders.class);
+        doReturn(Optional.empty()).when(authenticationFacade).getCurrentUserLogin();
+
+        turnsService.postOrders(id, mockOrders);
+    }
+
+    @Test(expected = PlayerNotFoundException.class)
+    public void postOrdersPlayerNotFound() {
+        long id = 1L;
+        String testUserLogin = "daffy";
+        doReturn(Optional.of(testUserLogin)).when(authenticationFacade).getCurrentUserLogin();
+        doReturn(Optional.empty()).when(playerRepository).findByName(testUserLogin);
+        TurnOrders mockOrders = mock(TurnOrders.class);
+
+        turnsService.postOrders(id, mockOrders);
     }
 
     @Test

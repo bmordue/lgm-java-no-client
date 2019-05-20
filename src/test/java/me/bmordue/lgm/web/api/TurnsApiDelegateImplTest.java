@@ -1,6 +1,8 @@
 package me.bmordue.lgm.web.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import me.bmordue.lgm.web.api.exceptions.PlayerNotFoundException;
+import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
 import me.bmordue.lgm.web.api.model.TurnOrders;
 import me.bmordue.lgm.web.api.model.TurnResultsResponse;
 import org.junit.Test;
@@ -14,8 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
@@ -50,6 +51,27 @@ public class TurnsApiDelegateImplTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/turns/1"))
 //            .andDo(print())
             .andExpect(status().isOk());
-
     }
+
+    @Test
+    public void postOrdersUserLoginNotFound() throws Exception {
+        String jsonContent = objectMapper.writeValueAsString(new TurnOrders());
+        doThrow(UserLoginNotFoundException.class).when(turnsService).postOrders(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/turns/1").contentType("application/json").content(jsonContent))
+            .andExpect(status().isUnauthorized());
+    }
+            
+    @Test
+    public void postOrdersPlayerNotFound() throws Exception {
+        String jsonContent = objectMapper.writeValueAsString(new TurnOrders());
+        doThrow(PlayerNotFoundException.class).when(turnsService).postOrders(any(), any());
+
+        mockMvc.perform(MockMvcRequestBuilders
+            .post("/turns/1").contentType("application/json").content(jsonContent))
+            .andExpect(status().isInternalServerError());
+    }
+
+
 }
