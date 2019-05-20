@@ -69,7 +69,7 @@ public class GamesServiceTest {
 
         doReturn(Optional.of(testUserLogin)).when(authenticationFacade).getCurrentUserLogin();
         doReturn(mockPlayer).when(playerMapper).userLoginToPlayer(testUserLogin);
-        doReturn(mockPlayer).when(playerRepository).findByName(testUserLogin);
+        doReturn(Optional.of(mockPlayer)).when(playerRepository).findByName(testUserLogin);
         doReturn(Optional.of(mockGame)).when(gameRepository).findById(gameId);
 
         gamesService.joinGame(gameId);
@@ -100,6 +100,8 @@ public class GamesServiceTest {
     @Test(expected = UserLoginNotFoundException.class)
     public void joinGameUserLoginNotFound() {
         long gameId = 42L;
+        Game mockGame = mock(Game.class);
+        doReturn(Optional.of(mockGame)).when(gameRepository).findById(gameId);
         doReturn(Optional.empty()).when(authenticationFacade).getCurrentUserLogin();
 
         gamesService.joinGame(gameId);
