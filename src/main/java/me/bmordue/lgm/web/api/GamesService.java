@@ -33,12 +33,14 @@ class GamesService {
     @Autowired
     private PlayerMapper playerMapper;
 
-    private Player findOrCreatePlayerForCurrentUserLogin() {
+    private Player findOrCreatePlayerForCurrentUserLogin(Game game) {
         String userLogin = authenticationFacade.getCurrentUserLogin()
             .orElseThrow(UserLoginNotFoundException::new);
         Player loginPlayer = playerMapper.userLoginToPlayer(userLogin);
-        Optional<Player> existingPlayer = playerRepository.findByName(loginPlayer.getName());
+        loginPlayer.setName(userLogin);
+        loginPlayer.setGame(game);
 
+        Optional<Player> existingPlayer = playerRepository.findByName(loginPlayer.getName());
         return existingPlayer.orElse(playerRepository.save(loginPlayer));
     }
 
@@ -50,7 +52,7 @@ class GamesService {
     void joinGame(Long id) {
         Game game = gameRepository.findById(id)
             .orElseThrow(GameNotFoundException::new);
-        game.addPlayer(findOrCreatePlayerForCurrentUserLogin());
+        game.addPlayer(findOrCreatePlayerForCurrentUserLogin(game));
         gameRepository.save(game);
     }
 }
