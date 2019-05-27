@@ -11,9 +11,9 @@ public class TurnsServiceErrorAdvice {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler({PlayerNotFoundException.class})
-    public void handle(PlayerNotFoundException.class e) {}
+    public void handle(PlayerNotFoundException e) {}
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({LgmServiceException.class})
-    public void handle(LgmServiceException.class e) {}
+    public void handle(LgmServiceException e) {}
 }
