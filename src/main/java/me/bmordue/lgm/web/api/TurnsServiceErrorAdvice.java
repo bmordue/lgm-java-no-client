@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class TurnsServiceErrorAdvice {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    @ExceptionHandler({PlayerNotFoundException.class, UserLoginNotFoundException.class})
-    public void handle() {}
+    @ExceptionHandler({PlayerNotFoundException.class})
+    public void handle(PlayerNotFoundException.class e) {}
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({LgmServiceException.class})
-    public void handle() {}
+    public void handle(LgmServiceException.class e) {}
 }
