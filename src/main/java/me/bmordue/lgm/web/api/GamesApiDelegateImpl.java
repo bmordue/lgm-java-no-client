@@ -1,6 +1,7 @@
 package me.bmordue.lgm.web.api;
 
 import me.bmordue.lgm.web.api.model.GameCreatedResponse;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ public class GamesApiDelegateImpl implements GamesApiDelegate {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<Void> joinGame(Long id) {
         gamesService.joinGame(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
