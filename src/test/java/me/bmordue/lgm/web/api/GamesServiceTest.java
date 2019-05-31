@@ -69,7 +69,7 @@ public class GamesServiceTest {
 
         doReturn(Optional.of(testUserLogin)).when(authenticationFacade).getCurrentUserLogin();
         doReturn(mockPlayer).when(playerMapper).userLoginToPlayer(testUserLogin);
-        doReturn(Optional.of(mockPlayer)).when(playerRepository).findByName(testUserLogin);
+        doReturn(Optional.of(mockPlayer)).when(playerRepository).findByNameAndGameId(testUserLogin, gameId);
         doReturn(Optional.of(mockGame)).when(gameRepository).findById(gameId);
 
         gamesService.joinGame(gameId);
