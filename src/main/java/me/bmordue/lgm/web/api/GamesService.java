@@ -40,7 +40,8 @@ class GamesService {
         loginPlayer.setName(userLogin);
         loginPlayer.setGame(game);
 
-        Optional<Player> existingPlayer = playerRepository.findByName(loginPlayer.getName());
+        // or use find by example
+        Optional<Player> existingPlayer = playerRepository.findByNameAndGameId(loginPlayer.getName(), game.getId());
         return existingPlayer.orElse(playerRepository.save(loginPlayer));
     }
 
