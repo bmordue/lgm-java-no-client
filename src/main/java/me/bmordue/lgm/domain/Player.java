@@ -17,7 +17,8 @@ import java.util.Objects;
  * A Player.
  */
 @Entity
-@Table(name = "player")
+@Table(name = "player", uniqueConstraints=
+        @UniqueConstraint(columnNames={"name", "game_id"}))
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class Player implements Serializable {
 
