@@ -43,7 +43,7 @@ public class TurnsService {
     void postOrders(Long id, TurnOrders turnOrders) {
         String userLogin = authenticationFacade.getCurrentUserLogin()
             .orElseThrow(UserLoginNotFoundException::new);
-        Player player = playerRepository.findByName(userLogin)
+        Player player = playerRepository.findByNameAndGameId(userLogin, id)
             .orElseThrow(PlayerNotFoundException::new);
         PlayerTurn playerTurn = playerTurnMapper.turnOrdersToPlayerTurn(id, player, turnOrders);
         playerTurnRepository.save(playerTurn);
