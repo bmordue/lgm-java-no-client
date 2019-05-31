@@ -13,6 +13,5 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @Repository
 public interface PlayerRepository extends JpaRepository<Player, Long> {
-    Optional<Player> findByName(String name);
     Optional<Player> findByNameAndGameId(String name, long gameId);
 }
