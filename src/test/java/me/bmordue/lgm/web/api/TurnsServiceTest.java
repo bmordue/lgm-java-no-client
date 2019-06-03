@@ -63,7 +63,7 @@ public class TurnsServiceTest {
         String testUserLogin = "daffy";
         Player mockPlayer = mock(Player.class);
         doReturn(Optional.of(testUserLogin)).when(authenticationFacade).getCurrentUserLogin();
-        doReturn(Optional.of(mockPlayer)).when(playerRepository).findByName(testUserLogin);
+        doReturn(Optional.of(mockPlayer)).when(playerRepository).findByNameAndGameId(testUserLogin, id);
         TurnOrders mockOrders = mock(TurnOrders.class);
 
         turnsService.postOrders(id, mockOrders);
@@ -85,7 +85,7 @@ public class TurnsServiceTest {
         long id = 1L;
         String testUserLogin = "daffy";
         doReturn(Optional.of(testUserLogin)).when(authenticationFacade).getCurrentUserLogin();
-        doReturn(Optional.empty()).when(playerRepository).findByName(testUserLogin);
+        doReturn(Optional.empty()).when(playerRepository).findByNameAndGameId(testUserLogin, id);
         TurnOrders mockOrders = mock(TurnOrders.class);
 
         turnsService.postOrders(id, mockOrders);
