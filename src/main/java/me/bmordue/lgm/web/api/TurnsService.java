@@ -12,6 +12,7 @@ import me.bmordue.lgm.service.mapper.PlayerTurnMapper;
 import me.bmordue.lgm.service.mapper.TurnOutcomeMapper;
 import me.bmordue.lgm.web.api.exceptions.PlayerNotFoundException;
 import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
+import me.bmordue.lgm.web.api.exceptions.GameNotFoundException;
 import me.bmordue.lgm.web.api.model.TurnOrders;
 import me.bmordue.lgm.web.api.model.TurnResultsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
