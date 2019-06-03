@@ -3,6 +3,7 @@ package me.bmordue.lgm.web.api;
 import me.bmordue.lgm.domain.Player;
 import me.bmordue.lgm.domain.PlayerTurn;
 import me.bmordue.lgm.domain.RulesProcessor;
+import me.bmordue.lgm.repository.GameRepository;
 import me.bmordue.lgm.repository.PlayerRepository;
 import me.bmordue.lgm.repository.PlayerTurnRepository;
 import me.bmordue.lgm.repository.TurnOutcomeRepository;
@@ -39,6 +40,9 @@ public class TurnsService {
 
     @Autowired
     private RulesProcessor rulesProcessor;
+    
+    @Autowired
+    private GameRepository gameRepository;
 
     void postOrders(Long id, TurnOrders turnOrders) {
         String userLogin = authenticationFacade.getCurrentUserLogin()
@@ -46,6 +50,10 @@ public class TurnsService {
         Player player = playerRepository.findByNameAndGameId(userLogin, id)
             .orElseThrow(PlayerNotFoundException::new);
         PlayerTurn playerTurn = playerTurnMapper.turnOrdersToPlayerTurn(id, player, turnOrders);
+        
+        playerTurn.setPlayer(player);
+        playerTurn.setGame(gameRepository.findById(id).orElseThrow(GameNotFoundException::new));
+        
         playerTurnRepository.save(playerTurn);
 
         rulesProcessor.process(); // this should become asynchronous
