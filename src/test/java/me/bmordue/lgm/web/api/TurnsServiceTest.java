@@ -1,8 +1,12 @@
 package me.bmordue.lgm.web.api;
 
+import me.bmordue.lgm.domain.Game;
+import me.bmordue.lgm.domain.GameTurn;
 import me.bmordue.lgm.domain.Player;
 import me.bmordue.lgm.domain.RulesProcessor;
 import me.bmordue.lgm.domain.TurnOutcome;
+import me.bmordue.lgm.repository.GameRepository;
+import me.bmordue.lgm.repository.GameTurnRepository;
 import me.bmordue.lgm.repository.PlayerRepository;
 import me.bmordue.lgm.repository.PlayerTurnRepository;
 import me.bmordue.lgm.repository.TurnOutcomeRepository;
@@ -41,6 +45,12 @@ public class TurnsServiceTest {
     PlayerTurnRepository playerTurnRepository;
 
     @Mock
+    GameRepository gameRepository;
+
+    @Mock
+    GameTurnRepository gameTurnRepository;
+
+    @Mock
     PlayerTurnMapper playerTurnMapper;
 
     @Mock
@@ -60,10 +70,16 @@ public class TurnsServiceTest {
     @Test
     public void postOrders() {
         long id = 1L;
+
         String testUserLogin = "daffy";
         Player mockPlayer = mock(Player.class);
+        Game mockGame = mock(Game.class);
+        GameTurn mockGameTurn = mock(GameTurn.class);
+
         doReturn(Optional.of(testUserLogin)).when(authenticationFacade).getCurrentUserLogin();
         doReturn(Optional.of(mockPlayer)).when(playerRepository).findByNameAndGameId(testUserLogin, id);
+        doReturn(Optional.of(mockGame)).when(gameRepository).findById(id);
+        doReturn(mockGameTurn).when(gameTurnRepository).findFirstByGameOrderByTurnNumberDesc(mockGame);
         TurnOrders mockOrders = mock(TurnOrders.class);
 
         turnsService.postOrders(id, mockOrders);
