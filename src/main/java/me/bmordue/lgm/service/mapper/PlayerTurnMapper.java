@@ -8,5 +8,7 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface PlayerTurnMapper {
-    PlayerTurn turnOrdersToPlayerTurn(Long id, Player player, TurnOrders turnOrders);
+    default PlayerTurn turnOrdersToPlayerTurn(Long id, Player player, TurnOrders turnOrders) {
+        return new PlayerTurn();
+    }
 }
