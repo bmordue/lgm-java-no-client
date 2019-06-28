@@ -5,22 +5,26 @@ node {
     }
 
     def volumes = "-v ${WORKSPACE}:/opt/src -w /opt/src"
-    def tag = "3-jdk-8-alpine"
-    def image_name = "maven"
 
     def DOCKER_HOME = tool 'docker'
     def DOCKER_BIN = "${DOCKER_HOME}/bin/docker"
     def MVN = "mvn -e -B"
 
+    def build_image
+
     try {
+        stage ('Build the builder') {
+            build_image = docker.build("lgm-builder", "./src/main/docker/build")
+        }
+
         stage ('Build') {
-            docker.image("${image_name}:${tag}").inside("${volumes}") {
+            build_image.inside("${volumes}") {
                 sh "${MVN} clean package -DskipTests > mvn_package.log 2>&1"
             }
         }
 
         stage ('Run tests') {
-            docker.image("${image_name}:${tag}").inside("${volumes}") {
+            build_image.inside("${volumes}") {
                 sh "${MVN} test > mvn_test.log 2>&1"
             }
         }
@@ -28,7 +32,7 @@ node {
         stage ('Coverage') {
             deleteDir()
             checkout scm
-            docker.image("${image_name}:${tag}").inside("${volumes}") {
+            build_image.inside("${volumes}") {
                 sh "${MVN} clean org.jacoco:jacoco-maven-plugin:prepare-agent install -Dmaven.test.failure.ignore=false > mvn_coverage.log 2>&1"
             }
         }

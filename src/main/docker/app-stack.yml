@@ -1,7 +1,7 @@
 version: '3'
 services:
     app:
-        image: lgm:d7aab35
+        image: lgm:6834d71
         environment:
             - _JAVA_OPTIONS=-Xmx512m -Xms256m
             - SPRING_PROFILES_ACTIVE=prod,swagger
