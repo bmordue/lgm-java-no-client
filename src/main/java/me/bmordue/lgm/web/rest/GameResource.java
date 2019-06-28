@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -28,7 +27,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@PreAuthorize("hasRole('ROLE_USER')")
 public class GameResource {
 
     private final Logger log = LoggerFactory.getLogger(GameResource.class);
@@ -120,7 +118,6 @@ public class GameResource {
      */
     @DeleteMapping("/games/{id}")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteGame(@PathVariable Long id) {
         log.debug("REST request to delete Game : {}", id);
 

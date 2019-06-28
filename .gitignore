@@ -143,9 +143,4 @@ Desktop.ini
 # ESLint
 ######################
 .eslintcache
-
-.env*
-sonar.sh
-
-
-.m2/*
+.m2/

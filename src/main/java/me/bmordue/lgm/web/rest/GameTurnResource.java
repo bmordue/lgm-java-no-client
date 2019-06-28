@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,7 +28,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@PreAuthorize("hasRole('ROLE_USER')")
 public class GameTurnResource {
 
     private final Logger log = LoggerFactory.getLogger(GameTurnResource.class);
@@ -73,7 +71,6 @@ public class GameTurnResource {
      */
     @PutMapping("/game-turns")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<GameTurn> updateGameTurn(@Valid @RequestBody GameTurn gameTurn) throws URISyntaxException {
         log.debug("REST request to update GameTurn : {}", gameTurn);
         if (gameTurn.getId() == null) {
@@ -122,7 +119,6 @@ public class GameTurnResource {
      */
     @DeleteMapping("/game-turns/{id}")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteGameTurn(@PathVariable Long id) {
         log.debug("REST request to delete GameTurn : {}", id);
 

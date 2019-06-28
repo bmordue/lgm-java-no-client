@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -50,7 +49,6 @@ public class ActorCommandResource {
      */
     @PostMapping("/actor-commands")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ActorCommand> createActorCommand(@Valid @RequestBody ActorCommand actorCommand) throws URISyntaxException {
         log.debug("REST request to save ActorCommand : {}", actorCommand);
         if (actorCommand.getId() != null) {
@@ -73,7 +71,6 @@ public class ActorCommandResource {
      */
     @PutMapping("/actor-commands")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ActorCommand> updateActorCommand(@Valid @RequestBody ActorCommand actorCommand) throws URISyntaxException {
         log.debug("REST request to update ActorCommand : {}", actorCommand);
         if (actorCommand.getId() == null) {
@@ -93,7 +90,6 @@ public class ActorCommandResource {
      */
     @GetMapping("/actor-commands")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<ActorCommand>> getAllActorCommands(Pageable pageable) {
         log.debug("REST request to get a page of ActorCommands");
         Page<ActorCommand> page = actorCommandRepository.findAll(pageable);
@@ -109,7 +105,6 @@ public class ActorCommandResource {
      */
     @GetMapping("/actor-commands/{id}")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ActorCommand> getActorCommand(@PathVariable Long id) {
         log.debug("REST request to get ActorCommand : {}", id);
         Optional<ActorCommand> actorCommand = actorCommandRepository.findById(id);
@@ -124,7 +119,6 @@ public class ActorCommandResource {
      */
     @DeleteMapping("/actor-commands/{id}")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteActorCommand(@PathVariable Long id) {
         log.debug("REST request to delete ActorCommand : {}", id);
 

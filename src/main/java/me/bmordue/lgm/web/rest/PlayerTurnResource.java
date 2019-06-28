@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,7 +28,6 @@ import java.util.Optional;
  */
 @RestController
 @RequestMapping("/api")
-@PreAuthorize("hasRole('ROLE_USER')")
 public class PlayerTurnResource {
 
     private final Logger log = LoggerFactory.getLogger(PlayerTurnResource.class);
@@ -73,7 +71,6 @@ public class PlayerTurnResource {
      */
     @PutMapping("/player-turns")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<PlayerTurn> updatePlayerTurn(@Valid @RequestBody PlayerTurn playerTurn) throws URISyntaxException {
         log.debug("REST request to update PlayerTurn : {}", playerTurn);
         if (playerTurn.getId() == null) {
@@ -93,7 +90,6 @@ public class PlayerTurnResource {
      */
     @GetMapping("/player-turns")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<PlayerTurn>> getAllPlayerTurns(Pageable pageable) {
         log.debug("REST request to get a page of PlayerTurns");
         Page<PlayerTurn> page = playerTurnRepository.findAll(pageable);
@@ -123,7 +119,6 @@ public class PlayerTurnResource {
      */
     @DeleteMapping("/player-turns/{id}")
     @Timed
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deletePlayerTurn(@PathVariable Long id) {
         log.debug("REST request to delete PlayerTurn : {}", id);
 

@@ -1,6 +1,5 @@
 package me.bmordue.lgm.repository;
 
-import me.bmordue.lgm.domain.Game;
 import me.bmordue.lgm.domain.GameTurn;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
@@ -12,5 +11,5 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface GameTurnRepository extends JpaRepository<GameTurn, Long> {
-	GameTurn findFirstByGameOrderByTurnNumberDesc(Game game);
+
 }
