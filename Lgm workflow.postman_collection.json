@@ -1,0 +1,1719 @@
+{
+	"info": {
+		"_postman_id": "cfc80f48-2957-47b8-9154-597c5d9d60e0",
+		"name": "Lgm workflow",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "workflow",
+			"item": [
+				{
+					"name": "authorize",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "42629227-1ed8-4f80-ad98-4459fc1acba1",
+								"exec": [
+									"var hdr = postman.getResponseHeader(\"Authorization\");",
+									"var token = hdr.split(' ')[1]",
+									"pm.environment.set(\"AUTH_TOKEN\", token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"user\",\n    \"username\": \"user\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/authenticate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"authenticate"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"<string>\",\n    \"username\": \"<string>\",\n    \"rememberMe\": \"<boolean>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/authenticate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"authenticate"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"<string>\",\n    \"username\": \"<string>\",\n    \"rememberMe\": \"<boolean>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/authenticate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"authenticate"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"<string>\",\n    \"username\": \"<string>\",\n    \"rememberMe\": \"<boolean>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/authenticate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"authenticate"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"<string>\",\n    \"username\": \"<string>\",\n    \"rememberMe\": \"<boolean>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/authenticate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"authenticate"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"password\": \"<string>\",\n    \"username\": \"<string>\",\n    \"rememberMe\": \"<boolean>\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/authenticate",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"authenticate"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "getAllPlayers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/players",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"players"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/players?offset=<long>&page=<integer>&pageNumber=<integer>&pageSize=<integer>&paged=<boolean>&size=<integer>&sort=<string>,<string>&sort.sorted=<boolean>&sort.unsorted=<boolean>&unpaged=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"players"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "<long>"
+										},
+										{
+											"key": "page",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageNumber",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageSize",
+											"value": "<integer>"
+										},
+										{
+											"key": "paged",
+											"value": "<boolean>"
+										},
+										{
+											"key": "size",
+											"value": "<integer>"
+										},
+										{
+											"key": "sort",
+											"value": "<string>,<string>"
+										},
+										{
+											"key": "sort.sorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "sort.unsorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "unpaged",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/players?offset=<long>&page=<integer>&pageNumber=<integer>&pageSize=<integer>&paged=<boolean>&size=<integer>&sort=<string>,<string>&sort.sorted=<boolean>&sort.unsorted=<boolean>&unpaged=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"players"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "<long>"
+										},
+										{
+											"key": "page",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageNumber",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageSize",
+											"value": "<integer>"
+										},
+										{
+											"key": "paged",
+											"value": "<boolean>"
+										},
+										{
+											"key": "size",
+											"value": "<integer>"
+										},
+										{
+											"key": "sort",
+											"value": "<string>,<string>"
+										},
+										{
+											"key": "sort.sorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "sort.unsorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "unpaged",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/players?offset=<long>&page=<integer>&pageNumber=<integer>&pageSize=<integer>&paged=<boolean>&size=<integer>&sort=<string>,<string>&sort.sorted=<boolean>&sort.unsorted=<boolean>&unpaged=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"players"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "<long>"
+										},
+										{
+											"key": "page",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageNumber",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageSize",
+											"value": "<integer>"
+										},
+										{
+											"key": "paged",
+											"value": "<boolean>"
+										},
+										{
+											"key": "size",
+											"value": "<integer>"
+										},
+										{
+											"key": "sort",
+											"value": "<string>,<string>"
+										},
+										{
+											"key": "sort.sorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "sort.unsorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "unpaged",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/players?offset=<long>&page=<integer>&pageNumber=<integer>&pageSize=<integer>&paged=<boolean>&size=<integer>&sort=<string>,<string>&sort.sorted=<boolean>&sort.unsorted=<boolean>&unpaged=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"players"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "<long>"
+										},
+										{
+											"key": "page",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageNumber",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageSize",
+											"value": "<integer>"
+										},
+										{
+											"key": "paged",
+											"value": "<boolean>"
+										},
+										{
+											"key": "size",
+											"value": "<integer>"
+										},
+										{
+											"key": "sort",
+											"value": "<string>,<string>"
+										},
+										{
+											"key": "sort.sorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "sort.unsorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "unpaged",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "createPlayer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"player1\",\n    \"game\": {\n        \"id\": 6\n    }\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/players",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"players"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/players",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"players"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/players",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"players"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/players",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"players"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/players",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"players"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/players",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"players"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "createGame",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f8b70d85-4107-4a9d-85eb-1acd885a79c7",
+								"exec": [
+									"pm.globals.set(\"GAME_ID\", pm.response.json().id);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/games",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "updateGame",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{players: {\n    \"name\": \"player1\",\n    \"game\": {\n        \"id\": 6\n    }\n}]}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/games",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Created",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "null"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/api/games",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "getAllGames",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/games",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/games?offset=<long>&page=<integer>&pageNumber=<integer>&pageSize=<integer>&paged=<boolean>&size=<integer>&sort=<string>,<string>&sort.sorted=<boolean>&sort.unsorted=<boolean>&unpaged=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "<long>"
+										},
+										{
+											"key": "page",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageNumber",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageSize",
+											"value": "<integer>"
+										},
+										{
+											"key": "paged",
+											"value": "<boolean>"
+										},
+										{
+											"key": "size",
+											"value": "<integer>"
+										},
+										{
+											"key": "sort",
+											"value": "<string>,<string>"
+										},
+										{
+											"key": "sort.sorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "sort.unsorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "unpaged",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/games?offset=<long>&page=<integer>&pageNumber=<integer>&pageSize=<integer>&paged=<boolean>&size=<integer>&sort=<string>,<string>&sort.sorted=<boolean>&sort.unsorted=<boolean>&unpaged=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "<long>"
+										},
+										{
+											"key": "page",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageNumber",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageSize",
+											"value": "<integer>"
+										},
+										{
+											"key": "paged",
+											"value": "<boolean>"
+										},
+										{
+											"key": "size",
+											"value": "<integer>"
+										},
+										{
+											"key": "sort",
+											"value": "<string>,<string>"
+										},
+										{
+											"key": "sort.sorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "sort.unsorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "unpaged",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/games?offset=<long>&page=<integer>&pageNumber=<integer>&pageSize=<integer>&paged=<boolean>&size=<integer>&sort=<string>,<string>&sort.sorted=<boolean>&sort.unsorted=<boolean>&unpaged=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "<long>"
+										},
+										{
+											"key": "page",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageNumber",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageSize",
+											"value": "<integer>"
+										},
+										{
+											"key": "paged",
+											"value": "<boolean>"
+										},
+										{
+											"key": "size",
+											"value": "<integer>"
+										},
+										{
+											"key": "sort",
+											"value": "<string>,<string>"
+										},
+										{
+											"key": "sort.sorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "sort.unsorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "unpaged",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/games?offset=<long>&page=<integer>&pageNumber=<integer>&pageSize=<integer>&paged=<boolean>&size=<integer>&sort=<string>,<string>&sort.sorted=<boolean>&sort.unsorted=<boolean>&unpaged=<boolean>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games"
+									],
+									"query": [
+										{
+											"key": "offset",
+											"value": "<long>"
+										},
+										{
+											"key": "page",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageNumber",
+											"value": "<integer>"
+										},
+										{
+											"key": "pageSize",
+											"value": "<integer>"
+										},
+										{
+											"key": "paged",
+											"value": "<boolean>"
+										},
+										{
+											"key": "size",
+											"value": "<integer>"
+										},
+										{
+											"key": "sort",
+											"value": "<string>,<string>"
+										},
+										{
+											"key": "sort.sorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "sort.unsorted",
+											"value": "<boolean>"
+										},
+										{
+											"key": "unpaged",
+											"value": "<boolean>"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "getGame",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{AUTH_TOKEN}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/games/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"games",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "OK",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/games/<long>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games",
+										"<long>"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "*/*"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Not Found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/games/<long>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games",
+										"<long>"
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/games/<long>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games",
+										"<long>"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/api/games/<long>",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"api",
+										"games",
+										"<long>"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "text",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "text/plain"
+								}
+							],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{AUTH_TOKEN}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2d8f0972-ddce-4b03-a253-9f094d5ce5f0",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a7c8d29d-1471-4d81-9a68-2ed1892443b0",
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"success response\"] = (responseCode.code >= 200 && responseCode.code < 300);"
+						]
+					}
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{AUTH_TOKEN}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "bc45eeaf-bf24-4029-b641-7c3a57e23dbd",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "7cc3c383-6bb5-4ba0-9986-e17dcfb36fd4",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "ded8f6c8-7d24-46a5-b294-8b5624dec772",
+			"key": "baseUrl",
+			"value": "https://lgm.pentland.ml",
+			"type": "string"
+		}
+	]
+}
