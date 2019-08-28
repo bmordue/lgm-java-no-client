@@ -34,10 +34,7 @@ node {
         }
 
         stage ('Analysis') {
-            def sonarProperties = "-v ${WORKSPACE}/conf:/root/sonar-scanner/conf" // doesn't appear to be working...
-            def sonarParams = "-Dsonar.host.url=https://sonarcloud.io -Dsonar.projectKey=bmordue_lgm-java-no-client" +
-                " -Dsonar.organization=bmordue-github -Dsonar.java.binaries=./target/ -Dsonar.coverage.jacoco.xmlReportPaths=target/test-results/coverage/jacoco/jacoco.xml" +
-                " -Dsonar.tests=src/test -Dsonar.sources=src/main"
+            def sonarProperties = "-v ${WORKSPACE}/conf:/usr/lib/sonar-scanner/conf"
             def sonarExtraParams = ""
 
             if (env.BRANCH_NAME != 'master') {
@@ -45,7 +42,7 @@ node {
             }
             withCredentials([string(credentialsId: 'SONAR_LOGIN', variable: 'SONAR_LOGIN')]) {
                 docker.image("newtmitch/sonar-scanner:3.2.0-alpine").inside("${volumes} ${sonarProperties}") {
-                    sh "sonar-scanner -Dsonar.login=${SONAR_LOGIN} ${sonarParams} ${sonarExtraParams} > sonar_scanner.log 2>&1"
+                    sh "sonar-scanner -Dsonar.login=${SONAR_LOGIN} ${sonarExtraParams}"
                 }
             }
         }
