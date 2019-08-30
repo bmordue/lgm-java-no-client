@@ -57,6 +57,8 @@ public class TurnsService {
         Player player = playerRepository.findByNameAndGameId(userLogin, id)
             .orElseThrow(PlayerNotFoundException::new);
         PlayerTurn playerTurn = playerTurnMapper.turnOrdersToPlayerTurn(id, player, turnOrders);
+
+        // TODO: this looks dubious... fix it
         if (playerTurn == null) { playerTurn = new PlayerTurn(); }
 
 	Game game = gameRepository.findById(id)

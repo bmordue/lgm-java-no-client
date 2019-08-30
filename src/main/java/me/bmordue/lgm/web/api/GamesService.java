@@ -34,6 +34,9 @@ class GamesService {
     @Autowired
     private PlayerMapper playerMapper;
 
+    @Autowired
+    private GameFactory gameFactory;
+
     private Player findOrCreatePlayerForCurrentUserLogin(Game game) {
         String userLogin = authenticationFacade.getCurrentUserLogin()
             .orElseThrow(UserLoginNotFoundException::new);
@@ -47,7 +50,7 @@ class GamesService {
     }
 
     GameCreatedResponse createGame() {
-        Game game = new Game();
+        Game game = gameFactory.build();
         return gameMapper.gameToGameCreatedResponse(gameRepository.save(game));
     }
 
