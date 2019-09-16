@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -34,6 +35,7 @@ public class TurnsApiDelegateImplTest {
     ObjectMapper objectMapper;
 
     @Test
+    @WithMockUser
     public void postOrders() throws Exception {
         String jsonContent = objectMapper.writeValueAsString(new TurnOrders());
 
@@ -44,6 +46,7 @@ public class TurnsApiDelegateImplTest {
     }
 
     @Test
+    @WithMockUser
     public void turnResults() throws Exception {
         TurnResultsResponse mockResults = mock(TurnResultsResponse.class);
         when(turnsService.getTurnResults(any())).thenReturn(mockResults);
@@ -54,6 +57,7 @@ public class TurnsApiDelegateImplTest {
     }
 
     @Test
+    @WithMockUser
     public void postOrdersUserLoginNotFound() throws Exception {
         String jsonContent = objectMapper.writeValueAsString(new TurnOrders());
         doThrow(UserLoginNotFoundException.class).when(turnsService).postOrders(any(), any());
@@ -62,8 +66,9 @@ public class TurnsApiDelegateImplTest {
             .post("/turns/1").contentType("application/json").content(jsonContent))
             .andExpect(status().isUnauthorized());
     }
-            
+
     @Test
+    @WithMockUser
     public void postOrdersPlayerNotFound() throws Exception {
         String jsonContent = objectMapper.writeValueAsString(new TurnOrders());
         doThrow(PlayerNotFoundException.class).when(turnsService).postOrders(any(), any());

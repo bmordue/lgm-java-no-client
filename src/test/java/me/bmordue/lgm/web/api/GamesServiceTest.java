@@ -8,9 +8,8 @@ import me.bmordue.lgm.security.IAuthenticationFacade;
 import me.bmordue.lgm.service.mapper.GameMapper;
 import me.bmordue.lgm.service.mapper.PlayerMapper;
 import me.bmordue.lgm.web.api.exceptions.GameNotFoundException;
-import me.bmordue.lgm.web.api.exceptions.PlayerNotFoundException;
 import me.bmordue.lgm.web.api.exceptions.UserLoginNotFoundException;
-import me.bmordue.lgm.web.api.model.GameCreatedResponse;
+import me.bmordue.lgm.web.api.model.GameInfoResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -41,6 +40,9 @@ public class GamesServiceTest {
     @Mock
     private PlayerMapper playerMapper;
 
+    @Mock
+    private GameFactory gameFactory;
+
     @InjectMocks
     private GamesService gamesService;
 
@@ -51,10 +53,10 @@ public class GamesServiceTest {
 
     @Test
     public void createGame() {
-        GameCreatedResponse mockResponse = mock(GameCreatedResponse.class);
-        doReturn(mockResponse).when(gameMapper).gameToGameCreatedResponse(any());
+        GameInfoResponse mockResponse = mock(GameInfoResponse.class);
+        doReturn(mockResponse).when(gameMapper).gameToGameInfoResponse(any());
 
-        GameCreatedResponse created = gamesService.createGame();
+        GameInfoResponse created = gamesService.createGame();
         assertNotNull(created);
     }
 
@@ -63,7 +65,7 @@ public class GamesServiceTest {
         String testUserLogin = "daffy";
         Player mockPlayer = mock(Player.class);
 
-        GameCreatedResponse mockGameCreated = mock(GameCreatedResponse.class);
+        GameInfoResponse mockGameCreated = mock(GameInfoResponse.class);
         long gameId = mockGameCreated.getId();
         Game mockGame = mock(Game.class);
 
@@ -82,7 +84,7 @@ public class GamesServiceTest {
         String testUserLogin = "daffy";
         Player mockPlayer = mock(Player.class);
 
-        GameCreatedResponse mockGameCreated = mock(GameCreatedResponse.class);
+        GameInfoResponse mockGameCreated = mock(GameInfoResponse.class);
         long gameId = mockGameCreated.getId();
         Game mockGame = mock(Game.class);
 

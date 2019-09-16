@@ -104,7 +104,6 @@ public class PlayerTurnResourceIntTest {
     }
 
     @Test
-    @Ignore
     @Transactional
     public void createPlayerTurn() throws Exception {
         int databaseSizeBeforeCreate = playerTurnRepository.findAll().size();
@@ -119,6 +118,7 @@ public class PlayerTurnResourceIntTest {
         List<PlayerTurn> playerTurnList = playerTurnRepository.findAll();
         assertThat(playerTurnList).hasSize(databaseSizeBeforeCreate + 1);
         PlayerTurn testPlayerTurn = playerTurnList.get(playerTurnList.size() - 1);
+        assertThat(testPlayerTurn).isEqualToIgnoringGivenFields(playerTurn, "id");
     }
 
     @Test
@@ -152,7 +152,7 @@ public class PlayerTurnResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(playerTurn.getId().intValue())));
     }
-    
+
     @Test
     @Transactional
     public void getPlayerTurn() throws Exception {
@@ -175,7 +175,6 @@ public class PlayerTurnResourceIntTest {
     }
 
     @Test
-    @Ignore
     @Transactional
     public void updatePlayerTurn() throws Exception {
         // Initialize the database
@@ -197,6 +196,7 @@ public class PlayerTurnResourceIntTest {
         List<PlayerTurn> playerTurnList = playerTurnRepository.findAll();
         assertThat(playerTurnList).hasSize(databaseSizeBeforeUpdate);
         PlayerTurn testPlayerTurn = playerTurnList.get(playerTurnList.size() - 1);
+        assertThat(testPlayerTurn).isEqualToComparingFieldByField(playerTurn);
     }
 
     @Test

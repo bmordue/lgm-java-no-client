@@ -28,7 +28,7 @@ public class Game implements Serializable {
     @OneToOne    @JoinColumn(unique = true)
     private Landscape landscape;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Player> players = new HashSet<>();
     @OneToMany(mappedBy = "game")
